@@ -1,0 +1,37 @@
+.env
+
+# Xcode
+*.pbxuser
+*.mode1v3
+*.mode2v3
+*.perspectivev3
+*.xcworkspace/
+xcuserdata/
+*.xcodeproj/xcuserdata/
+DerivedData/
+build/
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# Swift
+.build/
+*.swiftpm/xcode/
+docs/
+
+# CocoaPods
+Pods/
+Podfile.lock
+
+# Package managers
+.swiftpm/
+Package.resolved
+
+# OS files
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# IDE
+.vscode/
+.idea/
