@@ -76,7 +76,14 @@ final class PanelController {
 
     // MARK: - Keyboard
 
+    // Cmd+1…9: key codes → item indices. Dictionary создаётся один раз — O(1) lookup
+    private let numKeyMap: [Int: Int] = [
+        18: 0, 19: 1, 20: 2, 21: 3, 23: 4, 22: 5, 26: 6, 28: 7, 25: 8
+    ]
+
     private func handleKey(_ event: NSEvent) -> NSEvent? {
+        let cmd = event.modifierFlags.contains(.command)
+
         switch Int(event.keyCode) {
         case kVK_DownArrow:
             if state.selectedIndex < currentItems.count - 1 { state.selectedIndex += 1 }
@@ -90,10 +97,20 @@ final class PanelController {
             return nil
         case kVK_Escape:
             hide(); return nil
-        case kVK_ANSI_P where event.modifierFlags.contains(.command):
+        case kVK_ANSI_C where cmd:
+            // Re-copy: записываем в pasteboard без вставки, панель остаётся открытой
+            guard state.selectedIndex < currentItems.count else { return nil }
+            recopy(currentItems[state.selectedIndex]); return nil
+        case kVK_ANSI_P where cmd:
             guard state.selectedIndex < currentItems.count else { return nil }
             store.togglePin(currentItems[state.selectedIndex]); return nil
-        default: return event
+        default:
+            // Cmd+1…9: быстрый выбор + мгновенная вставка
+            if cmd, let index = numKeyMap[Int(event.keyCode)], index < currentItems.count {
+                paste(currentItems[index], asPlainText: false)
+                return nil
+            }
+            return event
         }
     }
 
@@ -101,5 +118,12 @@ final class PanelController {
         hide()
         previousApp?.activate(options: .activateIgnoringOtherApps)
         // PasteEngine подключается в Этапе 9
+    }
+
+    private func recopy(_ item: ClipboardItem) {
+        // Пишем в pasteboard — без симуляции Cmd+V, без закрытия панели
+        let pb = NSPasteboard.general
+        pb.clearContents()
+        pb.setString(item.content, forType: .string)
     }
 }

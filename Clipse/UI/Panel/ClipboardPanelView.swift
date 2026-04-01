@@ -42,7 +42,9 @@ struct ClipboardPanelView: View {
         HStack(spacing: 14) {
             hint("↵", "Paste")
             hint("⇧↵", "Plain text")
+            hint("⌘C", "Copy")
             hint("⌘P", "Pin")
+            hint("⌘1…9", "Quick paste")
             hint("⎋", "Close")
         }
         .padding(.horizontal, 14)
