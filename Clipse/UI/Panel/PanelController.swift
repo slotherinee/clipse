@@ -37,8 +37,8 @@ final class PanelController {
             .sink { [weak self] _, query in
                 guard let self else { return }
                 self.currentItems = self.store.filteredItems(query: query)
-                let max = self.currentItems.count - 1
-                if self.state.selectedIndex > max { self.state.selectedIndex = max(0, max) }
+                let lastIndex = self.currentItems.count - 1
+                if self.state.selectedIndex > lastIndex { self.state.selectedIndex = max(0, lastIndex) }
             }
             .store(in: &cancellables)
     }

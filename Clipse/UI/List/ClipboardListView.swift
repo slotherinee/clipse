@@ -21,7 +21,7 @@ struct ClipboardListView: View {
                 .padding(.vertical, 4)
             }
             // Magnetic selection: selected item центрируется при навигации
-            .onChange(of: selectedIndex) { _, newIndex in
+            .onChange(of: selectedIndex) { newIndex in
                 withAnimation(.easeOut(duration: 0.08)) {
                     proxy.scrollTo(newIndex, anchor: .center)
                 }

@@ -30,10 +30,10 @@ struct ClipboardPanelView: View {
         }
         .onAppear { refreshItems() }
         // Обновляем items только при изменении query или store.items
-        .onChange(of: state.query)      { _, _ in refreshItems(); state.selectedIndex = 0 }
-        .onChange(of: store.items)      { _, _ in refreshItems() }
+        .onChange(of: state.query)       { _ in refreshItems(); state.selectedIndex = 0 }
+        .onChange(of: store.items)       { _ in refreshItems() }
         // Фокус устанавливается по триггеру из PanelController
-        .onChange(of: state.focusTrigger) { _, _ in searchFocused = true }
+        .onChange(of: state.focusTrigger) { _ in searchFocused = true }
     }
 
     // MARK: - Footer

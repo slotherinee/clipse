@@ -1,12 +1,30 @@
 import AppKit
 
 final class AppDelegate: NSObject, NSApplicationDelegate {
+    private var clipboardStore: ClipboardStore?
+    private var clipboardMonitor: ClipboardMonitor?
+    private var panelController: PanelController?
+    private var hotkeyManager: HotkeyManager?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
-        // Этапы 2–11 будут подключаться здесь по мере реализации
+        let store = ClipboardStore()
+        clipboardStore = store
+
+        let panel = PanelController(store: store)
+        panelController = panel
+
+        let hotkey = HotkeyManager { [weak panel] in panel?.toggle() }
+        hotkeyManager = hotkey
+
+        let monitor = ClipboardMonitor(store: store)
+        clipboardMonitor = monitor
+
+        monitor.start()
+        hotkey.register()
     }
 
     func applicationWillTerminate(_ notification: Notification) {
-        // Cleanup при выходе
+        clipboardMonitor?.stop()
+        hotkeyManager?.unregister()
     }
 }
