@@ -43,6 +43,8 @@ final class ClipboardStore: ObservableObject {
     // Fuzzy search подключён в Этапе 4. activeBundleID для context awareness (Pro).
     func filteredItems(query: String, activeBundleID: String? = nil) -> [ClipboardItem] {
         guard !query.isEmpty else { return items }
+        PerformanceMonitor.searchBegin()
+        defer { PerformanceMonitor.searchEnd() }
         return FuzzySearch.filter(items, query: query, isPro: isPro(), activeBundleID: activeBundleID)
     }
 

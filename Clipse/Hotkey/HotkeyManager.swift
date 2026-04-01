@@ -58,6 +58,7 @@ final class HotkeyManager {
         else { return Unmanaged.passRetained(event) }
 
         // Dispatch async — не блокируем event tap callback
+        PerformanceMonitor.hotkeyFired()
         DispatchQueue.main.async { [weak self] in self?.onActivate() }
         return nil // Поглощаем событие
     }

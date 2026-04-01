@@ -61,6 +61,7 @@ final class PanelController {
         panel.alphaValue = 0
         panel.orderFront(nil)
         panel.makeKey()
+        PerformanceMonitor.panelDidAppear()
         isVisible = true
         SoundEngine.playWhoosh()
         NSAnimationContext.runAnimationGroup { ctx in
