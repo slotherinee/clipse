@@ -6,6 +6,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var panelController: PanelController?
     private var hotkeyManager: HotkeyManager?
     private var menuBarController: MenuBarController?
+    private let retentionTracker = RetentionTracker()
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         let store = ClipboardStore()
@@ -23,8 +24,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
         menuBarController = MenuBarController(store: store, panelController: panel)
 
+        panel.onPaste = { [weak self] in self?.retentionTracker.recordPaste() }
+
         monitor.start()
         hotkey.register()
+        retentionTracker.start()
     }
 
     func applicationDidBecomeActive(_ notification: Notification) {

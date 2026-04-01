@@ -11,6 +11,8 @@ final class PanelController {
     private(set) var isVisible = false
     private(set) var previousApp: NSRunningApplication?
     private var keyMonitor: Any?
+    /// Injected — called after each successful paste for retention tracking
+    var onPaste: (() -> Void)?
     // Кэш отфильтрованных items для keyboard handler — синхронизируется через Combine
     private var currentItems: [ClipboardItem] = []
     private var cancellables = Set<AnyCancellable>()
@@ -119,10 +121,8 @@ final class PanelController {
 
     private func paste(_ item: ClipboardItem, asPlainText: Bool) {
         hide()
-        // Activate ПЕРЕД asyncAfter — даём системе начать переключение фокуса
+        onPaste?()
         previousApp?.activate(options: .activateIgnoringOtherApps)
-        // 100ms — стандартная задержка для надёжного переключения фокуса на macOS.
-        // Меньше → paste попадает в неактивное окно. Больше → ощутимая задержка.
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
             PasteEngine.paste(item, asPlainText: asPlainText)
         }
