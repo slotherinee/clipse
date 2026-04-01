@@ -11,6 +11,8 @@ struct ClipboardItem: Identifiable, Equatable {
     let id: UUID
     var type: ClipType
     var content: String
+    /// Хранится один раз — не пересчитывается при каждом поиске
+    let contentLowercased: String
     var imageData: Data?
     var timestamp: Date
     var pinned: Bool
@@ -30,6 +32,7 @@ struct ClipboardItem: Identifiable, Equatable {
         self.id = id
         self.type = type
         self.content = content
+        self.contentLowercased = content.lowercased()
         self.imageData = imageData
         self.timestamp = timestamp
         self.pinned = pinned
