@@ -18,7 +18,7 @@ struct AppIconView: View {
 
     private var resolvedIcon: NSImage? {
         // Cache hit (including cached nil — app not found)
-        if iconCache.keys.contains(bundleID) { return iconCache[bundleID] ?? nil }
+        if let cached = iconCache[bundleID] { return cached }
 
         guard let url = NSWorkspace.shared.urlForApplication(withBundleIdentifier: bundleID) else {
             iconCache[bundleID] = .some(nil)

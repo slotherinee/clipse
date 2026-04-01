@@ -27,7 +27,7 @@ struct ClipboardListView: View {
                 .padding(.horizontal, 6)
                 .padding(.vertical, 4)
                 // Spring animation when items reorder (pin/unpin)
-                .animation(.spring(response: 0.28, dampingFraction: 0.72), value: items.map(\.id))
+                .animation(.spring(response: 0.28, dampingFraction: 0.72), value: itemsIdentityDigest)
             }
             .onChange(of: selectedIndex) { newIndex in
                 withAnimation(.easeOut(duration: 0.08)) {
@@ -36,5 +36,11 @@ struct ClipboardListView: View {
             }
         }
         .frame(maxHeight: 340)
+    }
+
+    private var itemsIdentityDigest: Int {
+        var hasher = Hasher()
+        for item in items { hasher.combine(item.id) }
+        return hasher.finalize()
     }
 }

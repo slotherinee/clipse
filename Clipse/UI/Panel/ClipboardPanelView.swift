@@ -1,12 +1,9 @@
 import SwiftUI
 
 struct ClipboardPanelView: View {
-    @ObservedObject var store: ClipboardStore
     @ObservedObject var state: PanelState
 
     @FocusState private var searchFocused: Bool
-    // displayItems обновляется через onChange — не пересчитывается при каждом рендере
-    @State private var displayItems: [ClipboardItem] = []
 
     var body: some View {
         ZStack {
@@ -17,10 +14,10 @@ struct ClipboardPanelView: View {
 
                 Divider().opacity(0.2)
 
-                if displayItems.isEmpty {
+                if state.filteredItems.isEmpty {
                     EmptyStateView(isSearching: !state.query.isEmpty)
                 } else {
-                    ClipboardListView(items: displayItems, selectedIndex: state.selectedIndex)
+                    ClipboardListView(items: state.filteredItems, selectedIndex: state.selectedIndex)
                 }
 
                 if let reason = state.upgradeReason {
@@ -33,10 +30,7 @@ struct ClipboardPanelView: View {
                 footerView
             }
         }
-        .onAppear { refreshItems() }
-        // Обновляем items только при изменении query или store.items
-        .onChange(of: state.query)       { _ in refreshItems(); state.selectedIndex = 0 }
-        .onChange(of: store.items)       { _ in refreshItems() }
+        .onChange(of: state.query) { _ in state.selectedIndex = 0 }
         // Фокус устанавливается по триггеру из PanelController
         .onChange(of: state.focusTrigger) { _ in searchFocused = true }
     }
@@ -61,11 +55,5 @@ struct ClipboardPanelView: View {
             Text(key).font(.system(size: 10, weight: .medium, design: .monospaced)).foregroundStyle(.secondary)
             Text(label).font(.system(size: 10)).foregroundStyle(.tertiary)
         }
-    }
-
-    // MARK: - Helpers
-
-    private func refreshItems() {
-        displayItems = store.filteredItems(query: state.query)
     }
 }

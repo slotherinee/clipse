@@ -30,7 +30,7 @@ final class PanelController {
     // MARK: - Setup
 
     private func preload() {
-        let view = ClipboardPanelView(store: store, state: state)
+        let view = ClipboardPanelView(state: state)
         let hosting = NSHostingView(rootView: view)
         hosting.wantsLayer = true
         panel.contentView = hosting
@@ -41,7 +41,9 @@ final class PanelController {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] _, query in
                 guard let self else { return }
-                self.currentItems = self.store.filteredItems(query: query)
+                let filtered = self.store.filteredItems(query: query)
+                self.currentItems = filtered
+                self.state.filteredItems = filtered
                 let lastIndex = self.currentItems.count - 1
                 if self.state.selectedIndex > lastIndex { self.state.selectedIndex = max(0, lastIndex) }
             }
