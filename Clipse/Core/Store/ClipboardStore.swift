@@ -37,10 +37,10 @@ final class ClipboardStore: ObservableObject {
         items.removeAll { !$0.pinned }
     }
 
-    // Инвариант соблюдён — sort не нужен, O(1) вместо O(n log n)
-    func filteredItems(query: String) -> [ClipboardItem] {
+    // Fuzzy search подключён в Этапе 4. activeBundleID для context awareness (Pro).
+    func filteredItems(query: String, activeBundleID: String? = nil) -> [ClipboardItem] {
         guard !query.isEmpty else { return items }
-        return items.filter { $0.content.localizedCaseInsensitiveContains(query) }
+        return FuzzySearch.filter(items, query: query, isPro: isPro(), activeBundleID: activeBundleID)
     }
 
     // Вставляем сразу после последнего pinned — O(n) один проход
