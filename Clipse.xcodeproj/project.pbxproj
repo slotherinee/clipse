@@ -11,6 +11,7 @@
 		2481C4F8D7268F63D85A5819 /* ClipboardStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1485B90EBEE10B2FB0C9EEE1 /* ClipboardStore.swift */; };
 		321F6EF6CB4F1724E55AA83B /* ClipboardItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F3940E187FF0D99260AFBB6 /* ClipboardItem.swift */; };
 		33E531B48A3269BB76BBA684 /* UpgradePromptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4D1DF0E47E5C13E1C2DB281 /* UpgradePromptView.swift */; };
+		3AD4E5525225381DB5A83404 /* SoundEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1E33F8652678038CB4ADD11 /* SoundEngine.swift */; };
 		3B254A2DDB846AAC831E9AE8 /* ClipboardPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E66F9E66F500AFD2822DF8B3 /* ClipboardPanel.swift */; };
 		43B3ABBB537EA7458EAB91B6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B8CF21CBCFC53569D28AA555 /* Assets.xcassets */; };
 		641A939B4B2EA7CAA31589F7 /* PanelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C28AC61DBD7CDE33CF38CD58 /* PanelController.swift */; };
@@ -23,6 +24,7 @@
 		993B9DCD831CA5C65610EA89 /* ClipboardItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2664B6AC2CEBC4063C073024 /* ClipboardItemView.swift */; };
 		9B3E957BD0EABB000C2E95CA /* ClipboardListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BD013A3D87CA7E673D7ADD0 /* ClipboardListView.swift */; };
 		A80E96401CE0EDA0EB5D6BC8 /* VisualEffectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC8EA500B6A6FEF6A13DA1ED /* VisualEffectView.swift */; };
+		AE70B8606BCB113AAD7D3455 /* AppIconView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 602803CA2D786E3079D902BE /* AppIconView.swift */; };
 		B6B887BEDDA0D0C6581E10E9 /* HotkeyManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 850ACE89C8C409840BCAD9D1 /* HotkeyManager.swift */; };
 		BD7B60537BCCB5D7026C359C /* RetentionTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA3549F0C269BB77C11EB3F7 /* RetentionTracker.swift */; };
 		D4503CE95047173576F35F84 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0808455DA55FF161B1489D66 /* SettingsView.swift */; };
@@ -47,6 +49,7 @@
 		2F3940E187FF0D99260AFBB6 /* ClipboardItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClipboardItem.swift; sourceTree = "<group>"; };
 		4F6BF04EF04BB496D3894B58 /* Clipse.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Clipse.entitlements; sourceTree = "<group>"; };
 		5C25B44DF2F8DA9D1009B1E0 /* ClipboardMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClipboardMonitor.swift; sourceTree = "<group>"; };
+		602803CA2D786E3079D902BE /* AppIconView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIconView.swift; sourceTree = "<group>"; };
 		610F8A1A6DACA763CDD78C8C /* ClipboardPanelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClipboardPanelView.swift; sourceTree = "<group>"; };
 		7A2A15BEC167D928B3970779 /* FuzzySearch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FuzzySearch.swift; sourceTree = "<group>"; };
 		850ACE89C8C409840BCAD9D1 /* HotkeyManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HotkeyManager.swift; sourceTree = "<group>"; };
@@ -59,6 +62,7 @@
 		D657BA06D7ACBA0740F99F97 /* LicenseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LicenseManager.swift; sourceTree = "<group>"; };
 		E66F9E66F500AFD2822DF8B3 /* ClipboardPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClipboardPanel.swift; sourceTree = "<group>"; };
 		F182C92F0ABB694C10ABB359 /* AppSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettings.swift; sourceTree = "<group>"; };
+		F1E33F8652678038CB4ADD11 /* SoundEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundEngine.swift; sourceTree = "<group>"; };
 		F3300BE167D0E10E0A6774F2 /* PanelState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PanelState.swift; sourceTree = "<group>"; };
 		F9AC28246FDAF64AF28816CB /* Clipse.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Clipse.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FA3549F0C269BB77C11EB3F7 /* RetentionTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RetentionTracker.swift; sourceTree = "<group>"; };
@@ -89,6 +93,7 @@
 		0FF7F9370DAA52CAF29BAA20 /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				602803CA2D786E3079D902BE /* AppIconView.swift */,
 				2664B6AC2CEBC4063C073024 /* ClipboardItemView.swift */,
 				D02B5298B65653402EFB6CC8 /* EmptyStateView.swift */,
 				CB305018189D2A3B9AF5A2DE /* SearchBarView.swift */,
@@ -206,6 +211,14 @@
 			path = UI;
 			sourceTree = "<group>";
 		};
+		931A39048AE56DD56D876685 /* Sound */ = {
+			isa = PBXGroup;
+			children = (
+				F1E33F8652678038CB4ADD11 /* SoundEngine.swift */,
+			);
+			path = Sound;
+			sourceTree = "<group>";
+		};
 		9CE5584960A6C6435397A338 /* Paste */ = {
 			isa = PBXGroup;
 			children = (
@@ -230,6 +243,7 @@
 				9CE5584960A6C6435397A338 /* Paste */,
 				11728912020387C7DA6F69A7 /* Retention */,
 				C42E9388FF075D0A1B236E08 /* Search */,
+				931A39048AE56DD56D876685 /* Sound */,
 				4DBF50D0408E0329948C64FF /* Store */,
 			);
 			path = Core;
@@ -323,6 +337,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7ED37B60DA43AB2188F0E2B1 /* AppDelegate.swift in Sources */,
+				AE70B8606BCB113AAD7D3455 /* AppIconView.swift in Sources */,
 				F6D67F631C1B051D057912EF /* AppSettings.swift in Sources */,
 				321F6EF6CB4F1724E55AA83B /* ClipboardItem.swift in Sources */,
 				993B9DCD831CA5C65610EA89 /* ClipboardItemView.swift in Sources */,
@@ -344,6 +359,7 @@
 				BD7B60537BCCB5D7026C359C /* RetentionTracker.swift in Sources */,
 				F91E8CC3AFA6C03285806E43 /* SearchBarView.swift in Sources */,
 				D4503CE95047173576F35F84 /* SettingsView.swift in Sources */,
+				3AD4E5525225381DB5A83404 /* SoundEngine.swift in Sources */,
 				33E531B48A3269BB76BBA684 /* UpgradePromptView.swift in Sources */,
 				A80E96401CE0EDA0EB5D6BC8 /* VisualEffectView.swift in Sources */,
 			);

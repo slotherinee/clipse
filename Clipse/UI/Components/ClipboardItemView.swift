@@ -1,4 +1,5 @@
 import SwiftUI
+import AppKit
 
 struct ClipboardItemView: View {
     let item: ClipboardItem
@@ -9,18 +10,11 @@ struct ClipboardItemView: View {
 
     var body: some View {
         HStack(spacing: 10) {
-            typeIcon
-                .frame(width: 18, alignment: .center)
+            typeIcon.frame(width: 18, alignment: .center)
 
             VStack(alignment: .leading, spacing: 2) {
-                Text(item.content)
-                    .lineLimit(2)
-                    .font(.system(size: 13))
-                    .foregroundStyle(.primary)
-
-                Text(relativeTime(item.timestamp))
-                    .font(.system(size: 11))
-                    .foregroundStyle(.tertiary)
+                contentView
+                metaRow
             }
 
             Spacer(minLength: 0)
@@ -40,7 +34,6 @@ struct ClipboardItemView: View {
         .padding(.vertical, 7)
         .background(rowBackground)
         .clipShape(RoundedRectangle(cornerRadius: 6))
-        // Instant Recall: selected item увеличен и подсвечен, остальные приглушены
         .scaleEffect(isSelected ? 1.03 : 1.0)
         .opacity(isSelected ? 1.0 : 0.65)
         .shadow(color: .accentColor.opacity(isSelected ? 0.2 : 0), radius: 6, y: 2)
@@ -48,7 +41,54 @@ struct ClipboardItemView: View {
         .onHover { isHovered = $0 }
     }
 
-    // MARK: - Subviews
+    // MARK: - Content
+
+    @ViewBuilder private var contentView: some View {
+        switch item.type {
+        case .url:
+            Text(domain(item.content))
+                .lineLimit(1)
+                .font(.system(size: 13))
+                .foregroundStyle(.primary)
+        case .code:
+            Text(item.content)
+                .lineLimit(2)
+                .font(.system(size: 12, design: .monospaced))
+                .foregroundStyle(.primary)
+        case .image:
+            imageThumbnail
+        case .text:
+            Text(item.content)
+                .lineLimit(2)
+                .font(.system(size: 13))
+                .foregroundStyle(.primary)
+        }
+    }
+
+    @ViewBuilder private var imageThumbnail: some View {
+        if let data = item.imageData, let img = NSImage(data: data) {
+            Image(nsImage: img)
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(height: 36)
+                .clipShape(RoundedRectangle(cornerRadius: 4))
+        } else {
+            Text("[Image]").font(.system(size: 13)).foregroundStyle(.secondary)
+        }
+    }
+
+    private var metaRow: some View {
+        HStack(spacing: 4) {
+            if let id = item.sourceBundleID {
+                AppIconView(bundleID: id)
+            }
+            Text(relativeTime(item.timestamp))
+                .font(.system(size: 11))
+                .foregroundStyle(.tertiary)
+        }
+    }
+
+    // MARK: - Helpers
 
     private var rowBackground: some View {
         RoundedRectangle(cornerRadius: 6)
@@ -71,7 +111,14 @@ struct ClipboardItemView: View {
         .foregroundStyle(.secondary)
     }
 
-    // Простая строка вместо Text(.., style: .relative) — не создаёт таймер на каждый item
+    // Strips scheme, returns bare domain — no URL(string:) allocation
+    private func domain(_ url: String) -> String {
+        var s = url
+        if s.hasPrefix("https://") { s = String(s.dropFirst(8)) }
+        else if s.hasPrefix("http://") { s = String(s.dropFirst(7)) }
+        return String(s.prefix(while: { $0 != "/" && $0 != "?" && $0 != "#" }))
+    }
+
     private func relativeTime(_ date: Date) -> String {
         let s = -date.timeIntervalSinceNow
         if s < 60    { return "just now" }

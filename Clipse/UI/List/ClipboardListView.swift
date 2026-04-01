@@ -9,6 +9,13 @@ struct ClipboardListView: View {
             ScrollView(.vertical, showsIndicators: false) {
                 LazyVStack(spacing: 2) {
                     ForEach(Array(items.enumerated()), id: \.element.id) { index, item in
+                        // Pinned zone divider — thin separator, not a folder
+                        if index > 0 && !item.pinned && items[index - 1].pinned {
+                            Divider()
+                                .padding(.horizontal, 10)
+                                .padding(.vertical, 2)
+                        }
+
                         ClipboardItemView(
                             item: item,
                             index: index,
@@ -19,8 +26,9 @@ struct ClipboardListView: View {
                 }
                 .padding(.horizontal, 6)
                 .padding(.vertical, 4)
+                // Spring animation when items reorder (pin/unpin)
+                .animation(.spring(response: 0.28, dampingFraction: 0.72), value: items.map(\.id))
             }
-            // Magnetic selection: selected item центрируется при навигации
             .onChange(of: selectedIndex) { newIndex in
                 withAnimation(.easeOut(duration: 0.08)) {
                     proxy.scrollTo(newIndex, anchor: .center)

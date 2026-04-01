@@ -60,6 +60,7 @@ final class PanelController {
         panel.orderFront(nil)
         panel.makeKey()
         isVisible = true
+        SoundEngine.playWhoosh()
         NSAnimationContext.runAnimationGroup { ctx in
             ctx.duration = 0.06
             ctx.timingFunction = CAMediaTimingFunction(name: .easeOut)
@@ -91,10 +92,10 @@ final class PanelController {
 
         switch Int(event.keyCode) {
         case kVK_DownArrow:
-            if state.selectedIndex < currentItems.count - 1 { state.selectedIndex += 1 }
+            if state.selectedIndex < currentItems.count - 1 { state.selectedIndex += 1; SoundEngine.playTick() }
             return nil
         case kVK_UpArrow:
-            if state.selectedIndex > 0 { state.selectedIndex -= 1 }
+            if state.selectedIndex > 0 { state.selectedIndex -= 1; SoundEngine.playTick() }
             return nil
         case kVK_Return:
             guard state.selectedIndex < currentItems.count else { return nil }
