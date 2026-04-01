@@ -21,8 +21,6 @@ struct SettingsView: View {
                             }
                         }
                     }
-
-                Toggle("Sound Feedback", isOn: $settings.soundEnabled)
             }
 
             Section("App Exclusions") {
@@ -55,6 +53,8 @@ struct SettingsView: View {
                     Spacer()
                     licenseStatusText
                 }
+                Toggle("Enable Pro (debug)", isOn: $license.debugProOverride)
+                    .foregroundStyle(.secondary)
                 if case .pro = license.status {} else {
                     Button("Unlock Pro — $9.99") { LicenseManager.shared.unlock() }
                         .buttonStyle(.borderedProminent)

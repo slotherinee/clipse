@@ -8,10 +8,11 @@ enum PermissionsManager {
         AXIsProcessTrusted()
     }
 
-    /// Triggers the system accessibility prompt dialog.
-    /// If already granted, this is a no-op.
+    /// Opens System Settings > Privacy & Security > Accessibility directly.
     static func requestAccessibility() {
-        let key = kAXTrustedCheckOptionPrompt.takeUnretainedValue() as String
-        AXIsProcessTrustedWithOptions([key: true] as CFDictionary)
+        // Open System Settings > Privacy & Security > Accessibility directly
+        if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_Accessibility") {
+            NSWorkspace.shared.open(url)
+        }
     }
 }

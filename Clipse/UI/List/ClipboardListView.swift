@@ -3,6 +3,7 @@ import SwiftUI
 struct ClipboardListView: View {
     let items: [ClipboardItem]
     let selectedIndex: Int
+    let onDoubleTap: ((ClipboardItem) -> Void)?
 
     var body: some View {
         ScrollViewReader { proxy in
@@ -19,7 +20,8 @@ struct ClipboardListView: View {
                         ClipboardItemView(
                             item: item,
                             index: index,
-                            isSelected: index == selectedIndex
+                            isSelected: index == selectedIndex,
+                            onDoubleTap: onDoubleTap
                         )
                         .id(index)
                     }

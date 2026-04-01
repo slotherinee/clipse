@@ -25,6 +25,7 @@ final class PanelController {
         store.onUpgradeNeeded = { [weak self] reason in
             self?.state.upgradeReason = reason
         }
+        state.onDoubleTapPaste = { [weak self] item in self?.paste(item, asPlainText: false) }
     }
 
     // MARK: - Setup
@@ -44,6 +45,7 @@ final class PanelController {
                 let filtered = self.store.filteredItems(query: query)
                 self.currentItems = filtered
                 self.state.filteredItems = filtered
+                if self.isVisible { self.panel.animateToHeight(ClipboardPanel.idealHeight(itemCount: filtered.count)) }
                 let lastIndex = self.currentItems.count - 1
                 if self.state.selectedIndex > lastIndex { self.state.selectedIndex = max(0, lastIndex) }
             }
@@ -57,13 +59,12 @@ final class PanelController {
     func show() {
         previousApp = NSWorkspace.shared.frontmostApplication
         state.reset()
-        panel.centerOnActiveScreen()
+        panel.centerOnActiveScreen(itemCount: state.filteredItems.count)
         panel.alphaValue = 0
         panel.orderFront(nil)
         panel.makeKey()
         PerformanceMonitor.panelDidAppear()
         isVisible = true
-        SoundEngine.playWhoosh()
         NSAnimationContext.runAnimationGroup { ctx in
             ctx.duration = 0.06
             ctx.timingFunction = CAMediaTimingFunction(name: .easeOut)
@@ -95,10 +96,10 @@ final class PanelController {
 
         switch Int(event.keyCode) {
         case kVK_DownArrow:
-            if state.selectedIndex < currentItems.count - 1 { state.selectedIndex += 1; SoundEngine.playTick() }
+            if state.selectedIndex < currentItems.count - 1 { state.selectedIndex += 1 }
             return nil
         case kVK_UpArrow:
-            if state.selectedIndex > 0 { state.selectedIndex -= 1; SoundEngine.playTick() }
+            if state.selectedIndex > 0 { state.selectedIndex -= 1 }
             return nil
         case kVK_Return:
             guard state.selectedIndex < currentItems.count else { return nil }

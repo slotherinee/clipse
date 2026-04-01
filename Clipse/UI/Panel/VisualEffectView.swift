@@ -3,7 +3,7 @@ import AppKit
 
 /// NSVisualEffectView обёртка — создаётся один раз, не пересоздаётся при re-render.
 struct VisualEffectView: NSViewRepresentable {
-    var material: NSVisualEffectView.Material = .hudWindow
+    var material: NSVisualEffectView.Material = .sidebar
     var blendingMode: NSVisualEffectView.BlendingMode = .behindWindow
 
     func makeNSView(context: Context) -> NSVisualEffectView {
@@ -12,7 +12,7 @@ struct VisualEffectView: NSViewRepresentable {
         view.blendingMode = blendingMode
         view.state = .active
         view.wantsLayer = true
-        view.layer?.cornerRadius = 12
+        view.layer?.cornerRadius = 16
         view.layer?.masksToBounds = true
         return view
     }

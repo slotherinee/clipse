@@ -5,6 +5,7 @@ struct ClipboardItemView: View {
     let item: ClipboardItem
     let index: Int
     let isSelected: Bool
+    let onDoubleTap: ((ClipboardItem) -> Void)?
 
     @State private var isHovered = false
 
@@ -39,6 +40,7 @@ struct ClipboardItemView: View {
         .shadow(color: .accentColor.opacity(isSelected ? 0.2 : 0), radius: 6, y: 2)
         .animation(.easeOut(duration: 0.08), value: isSelected)
         .onHover { isHovered = $0 }
+        .onTapGesture(count: 2) { onDoubleTap?(item) }
     }
 
     // MARK: - Content

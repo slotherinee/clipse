@@ -11,8 +11,14 @@ final class LicenseManager: ObservableObject {
 
     @Published private(set) var status: LicenseStatus
 
+    /// Debug override — set true in Settings to simulate Pro without purchase
+    @Published var debugProOverride: Bool = false {
+        didSet { UserDefaults.standard.set(debugProOverride, forKey: "debugProOverride") }
+    }
+
     /// True during trial OR after purchase — used by ClipboardStore.isPro closure
     var isPro: Bool {
+        if debugProOverride { return true }
         switch status {
         case .pro, .trial: return true
         case .free: return false
@@ -25,6 +31,7 @@ final class LicenseManager: ObservableObject {
 
     private init() {
         status = LicenseManager.computeStatus()
+        debugProOverride = UserDefaults.standard.bool(forKey: "debugProOverride")
     }
 
     /// Refresh status — call on applicationDidBecomeActive to keep trial countdown current

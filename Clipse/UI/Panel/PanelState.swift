@@ -10,6 +10,9 @@ final class PanelState: ObservableObject {
     /// Non-nil when a Pro feature was blocked — drives inline UpgradePromptView
     @Published var upgradeReason: UpgradeReason?
 
+    /// Called when the user double-taps an item to paste it immediately
+    var onDoubleTapPaste: ((ClipboardItem) -> Void)?
+
     func reset() {
         query = ""
         selectedIndex = 0

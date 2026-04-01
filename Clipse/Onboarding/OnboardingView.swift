@@ -15,8 +15,8 @@ struct OnboardingView: View {
                 .id(step) // forces transition on step change
         }
         .animation(.easeInOut(duration: 0.2), value: step)
-        .frame(width: 480, height: 300)
-        .padding(36)
+        .frame(width: 460, height: 280)
+        .padding(32)
     }
 
     @ViewBuilder private var stepView: some View {

@@ -13,21 +13,36 @@ enum FuzzySearch {
 
         // Lowercase query один раз на весь вызов
         let lowQuery = query.lowercased()
+        let words = lowQuery.split(separator: " ").map(String.init)
 
         var results: [(item: ClipboardItem, score: Int)] = []
         results.reserveCapacity(items.count)
 
-        for item in items {
-            // contentLowercased хранится в модели — нет аллокации здесь
-            let base = match(item.contentLowercased, query: lowQuery)
-            guard base > 0 else { continue }
-
-            var total = base
-            if isPro {
-                total += recencyBoost(item.timestamp)
-                total += ContextAwareness.boost(for: item, bundleID: activeBundleID)
+        if words.count > 1 {
+            // Multi-word: require ALL words to appear as substrings
+            for item in items {
+                let content = item.contentLowercased
+                guard words.allSatisfy({ content.contains($0) }) else { continue }
+                var total = words.reduce(0) { $0 + $1.count * 10 }
+                if isPro {
+                    total += recencyBoost(item.timestamp)
+                    total += ContextAwareness.boost(for: item, bundleID: activeBundleID)
+                }
+                results.append((item, total))
             }
-            results.append((item, total))
+        } else {
+            for item in items {
+                // contentLowercased хранится в модели — нет аллокации здесь
+                let base = match(item.contentLowercased, query: lowQuery)
+                guard base > 0 else { continue }
+
+                var total = base
+                if isPro {
+                    total += recencyBoost(item.timestamp)
+                    total += ContextAwareness.boost(for: item, bundleID: activeBundleID)
+                }
+                results.append((item, total))
+            }
         }
 
         // sort in-place — не создаём новый массив
