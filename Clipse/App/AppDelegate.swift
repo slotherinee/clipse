@@ -1,4 +1,5 @@
 import AppKit
+import SwiftUI
 
 final class AppDelegate: NSObject, NSApplicationDelegate {
     private var clipboardStore: ClipboardStore?
@@ -6,7 +7,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var panelController: PanelController?
     private var hotkeyManager: HotkeyManager?
     private var menuBarController: MenuBarController?
+    private var onboardingWindow: NSWindow?
     private let retentionTracker = RetentionTracker()
+
+    private enum Defaults {
+        static let onboardingDone = "onboardingCompleted"
+    }
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         let store = ClipboardStore()
@@ -23,12 +29,15 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         clipboardMonitor = monitor
 
         menuBarController = MenuBarController(store: store, panelController: panel)
-
         panel.onPaste = { [weak self] in self?.retentionTracker.recordPaste() }
 
         monitor.start()
         hotkey.register()
         retentionTracker.start()
+
+        if !UserDefaults.standard.bool(forKey: Defaults.onboardingDone) {
+            showOnboarding()
+        }
     }
 
     func applicationDidBecomeActive(_ notification: Notification) {
@@ -38,5 +47,28 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationWillTerminate(_ notification: Notification) {
         clipboardMonitor?.stop()
         hotkeyManager?.unregister()
+    }
+
+    // MARK: - Onboarding
+
+    private func showOnboarding() {
+        let view = OnboardingView { [weak self] in
+            UserDefaults.standard.set(true, forKey: Defaults.onboardingDone)
+            self?.onboardingWindow?.close()
+            self?.onboardingWindow = nil
+        }
+        let window = NSWindow(
+            contentRect: NSRect(x: 0, y: 0, width: 480, height: 372),
+            styleMask: [.titled, .closable],
+            backing: .buffered,
+            defer: false
+        )
+        window.title = "Welcome to Clipse"
+        window.contentView = NSHostingView(rootView: view)
+        window.center()
+        window.isReleasedWhenClosed = false
+        onboardingWindow = window
+        window.makeKeyAndOrderFront(nil)
+        NSApp.activate(ignoringOtherApps: true)
     }
 }

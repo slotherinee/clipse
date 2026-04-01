@@ -19,8 +19,10 @@
 		7480B35E6E5142134BBB68AE /* PanelState.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3300BE167D0E10E0A6774F2 /* PanelState.swift */; };
 		78E44A38A3B1EDB15DAF73CE /* PasteEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05964D43F36547EBADC94375 /* PasteEngine.swift */; };
 		7ED37B60DA43AB2188F0E2B1 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 296A36AD032AA74C5173350E /* AppDelegate.swift */; };
+		81CC140219CCD66919857BBC /* PermissionsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A5389966FE795EF5CB262A9 /* PermissionsManager.swift */; };
 		84CF0AEE6FADFDE8F858EFC8 /* FuzzySearch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A2A15BEC167D928B3970779 /* FuzzySearch.swift */; };
 		8649E899DF43D5E11BAE8B21 /* ClipboardPanelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 610F8A1A6DACA763CDD78C8C /* ClipboardPanelView.swift */; };
+		9930831E44F059651A92E4D5 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CBF9B67BC140D55667A757A /* OnboardingView.swift */; };
 		993B9DCD831CA5C65610EA89 /* ClipboardItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2664B6AC2CEBC4063C073024 /* ClipboardItemView.swift */; };
 		9B3E957BD0EABB000C2E95CA /* ClipboardListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BD013A3D87CA7E673D7ADD0 /* ClipboardListView.swift */; };
 		A80E96401CE0EDA0EB5D6BC8 /* VisualEffectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC8EA500B6A6FEF6A13DA1ED /* VisualEffectView.swift */; };
@@ -48,11 +50,13 @@
 		2BD013A3D87CA7E673D7ADD0 /* ClipboardListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClipboardListView.swift; sourceTree = "<group>"; };
 		2F3940E187FF0D99260AFBB6 /* ClipboardItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClipboardItem.swift; sourceTree = "<group>"; };
 		4F6BF04EF04BB496D3894B58 /* Clipse.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Clipse.entitlements; sourceTree = "<group>"; };
+		5A5389966FE795EF5CB262A9 /* PermissionsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionsManager.swift; sourceTree = "<group>"; };
 		5C25B44DF2F8DA9D1009B1E0 /* ClipboardMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClipboardMonitor.swift; sourceTree = "<group>"; };
 		602803CA2D786E3079D902BE /* AppIconView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIconView.swift; sourceTree = "<group>"; };
 		610F8A1A6DACA763CDD78C8C /* ClipboardPanelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClipboardPanelView.swift; sourceTree = "<group>"; };
 		7A2A15BEC167D928B3970779 /* FuzzySearch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FuzzySearch.swift; sourceTree = "<group>"; };
 		850ACE89C8C409840BCAD9D1 /* HotkeyManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HotkeyManager.swift; sourceTree = "<group>"; };
+		9CBF9B67BC140D55667A757A /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		B4D1DF0E47E5C13E1C2DB281 /* UpgradePromptView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpgradePromptView.swift; sourceTree = "<group>"; };
 		B8CF21CBCFC53569D28AA555 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		BF6E20E352E9B8F2151FDED9 /* ClipseApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClipseApp.swift; sourceTree = "<group>"; };
@@ -152,6 +156,7 @@
 				17EC469CF61E786E997C3BC0 /* Hotkey */,
 				35584D585E8D82DD4A0AC281 /* MenuBar */,
 				62EA8311906724F0F2377049 /* Monetization */,
+				D83520C8806FA71DAF5B969B /* Onboarding */,
 				25E73176A1CD8B29017DF5D1 /* Resources */,
 				86D4F1EC979B6CE54A41000D /* UI */,
 			);
@@ -266,6 +271,15 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		D83520C8806FA71DAF5B969B /* Onboarding */ = {
+			isa = PBXGroup;
+			children = (
+				9CBF9B67BC140D55667A757A /* OnboardingView.swift */,
+				5A5389966FE795EF5CB262A9 /* PermissionsManager.swift */,
+			);
+			path = Onboarding;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -353,9 +367,11 @@
 				B6B887BEDDA0D0C6581E10E9 /* HotkeyManager.swift in Sources */,
 				22E54FD9D423BBEAD803A013 /* LicenseManager.swift in Sources */,
 				E6EB884271DF927F2184965C /* MenuBarController.swift in Sources */,
+				9930831E44F059651A92E4D5 /* OnboardingView.swift in Sources */,
 				641A939B4B2EA7CAA31589F7 /* PanelController.swift in Sources */,
 				7480B35E6E5142134BBB68AE /* PanelState.swift in Sources */,
 				78E44A38A3B1EDB15DAF73CE /* PasteEngine.swift in Sources */,
+				81CC140219CCD66919857BBC /* PermissionsManager.swift in Sources */,
 				BD7B60537BCCB5D7026C359C /* RetentionTracker.swift in Sources */,
 				F91E8CC3AFA6C03285806E43 /* SearchBarView.swift in Sources */,
 				D4503CE95047173576F35F84 /* SettingsView.swift in Sources */,
