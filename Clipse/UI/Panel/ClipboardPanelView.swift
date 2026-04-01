@@ -37,7 +37,8 @@ struct ClipboardPanelView: View {
                     ClipboardListView(
                         items: state.filteredItems,
                         selectedIndex: state.selectedIndex,
-                        onDoubleTap: state.onDoubleTapPaste
+                        onDoubleTap: state.onDoubleTapPaste,
+                        onSelect: state.onSelect
                     )
                     .transition(.opacity)
                 }

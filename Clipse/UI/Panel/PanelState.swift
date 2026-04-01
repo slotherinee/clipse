@@ -12,6 +12,7 @@ final class PanelState: ObservableObject {
 
     /// Called when the user double-taps an item to paste it immediately
     var onDoubleTapPaste: ((ClipboardItem) -> Void)?
+    var onSelect: ((Int) -> Void)?
 
     func reset() {
         query = ""

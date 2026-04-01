@@ -1,6 +1,11 @@
 import AppKit
 
-private let codeSignals = ["func ", "def ", "class ", "import ", "//", "=>", "->", "var ", "let ", "const "]
+// Keywords that must appear at the START of the first line to qualify as code.
+// Avoids false positives like "don't let me go" or "https://…" containing "//".
+private let lineStartSignals = ["func ", "def ", "class ", "import ", "let ", "var ",
+                                 "const ", "return ", "export ", "package "]
+// Patterns that are unambiguous code regardless of position (rare in plain text)
+private let codePatterns = ["() {", ") {\n", ";\n", " => {", " => \n"]
 private let maxStringLength = 50_000 // ~50KB — пропускаем огромные логи/файлы
 
 final class ClipboardMonitor {
@@ -69,6 +74,12 @@ final class ClipboardMonitor {
     }
 
     private func isCode(_ string: String) -> Bool {
-        codeSignals.contains { string.contains($0) }
+        // Check first non-empty line starts with a code keyword
+        let firstLine = string
+            .prefix(while: { $0 != "\n" })
+            .trimmingCharacters(in: .whitespaces)
+        if lineStartSignals.contains(where: { firstLine.hasPrefix($0) }) { return true }
+        // Unambiguous structural patterns (never appear in plain prose)
+        return codePatterns.contains { string.contains($0) }
     }
 }

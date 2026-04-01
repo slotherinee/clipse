@@ -4,6 +4,7 @@ struct ClipboardListView: View {
     let items: [ClipboardItem]
     let selectedIndex: Int
     let onDoubleTap: ((ClipboardItem) -> Void)?
+    let onSelect: ((Int) -> Void)?
 
     var body: some View {
         ScrollViewReader { proxy in
@@ -21,7 +22,8 @@ struct ClipboardListView: View {
                             item: item,
                             index: index,
                             isSelected: index == selectedIndex,
-                            onDoubleTap: onDoubleTap
+                            onDoubleTap: onDoubleTap,
+                            onSelect: onSelect
                         )
                         .id(index)
                     }

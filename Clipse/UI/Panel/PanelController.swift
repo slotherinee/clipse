@@ -26,6 +26,9 @@ final class PanelController {
             self?.state.upgradeReason = reason
         }
         state.onDoubleTapPaste = { [weak self] item in self?.paste(item, asPlainText: false) }
+        state.onSelect = { [weak self] index in self?.state.selectedIndex = index }
+        // Populate filteredItems synchronously so show() has correct height on first call
+        state.filteredItems = store.items
     }
 
     // MARK: - Setup
