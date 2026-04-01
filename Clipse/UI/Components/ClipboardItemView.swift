@@ -41,8 +41,11 @@ struct ClipboardItemView: View {
         .shadow(color: .accentColor.opacity(isSelected ? 0.2 : 0), radius: 6, y: 2)
         .animation(.easeOut(duration: 0.08), value: isSelected)
         .onHover { isHovered = $0 }
-        .onTapGesture(count: 2) { onDoubleTap?(item) }
-        .onTapGesture(count: 1) { onSelect?(index) }
+        // Double-tap fires first (exclusively), then single-tap for select
+        .gesture(
+            TapGesture(count: 2).onEnded { onDoubleTap?(item) }
+                .exclusively(before: TapGesture(count: 1).onEnded { onSelect?(index) })
+        )
     }
 
     // MARK: - Content

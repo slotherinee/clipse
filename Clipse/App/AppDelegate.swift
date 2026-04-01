@@ -42,6 +42,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationDidBecomeActive(_ notification: Notification) {
         LicenseManager.shared.refresh()
+        // Re-register hotkey if it failed earlier (accessibility not yet granted at launch)
+        hotkeyManager?.registerIfNeeded()
     }
 
     func applicationWillTerminate(_ notification: Notification) {
@@ -52,13 +54,19 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     // MARK: - Onboarding
 
     private func showOnboarding() {
-        let view = OnboardingView { [weak self] in
-            UserDefaults.standard.set(true, forKey: Defaults.onboardingDone)
-            self?.onboardingWindow?.close()
-            self?.onboardingWindow = nil
-        }
+        let view = OnboardingView(
+            onAccessibilityGranted: { [weak self] in
+                // Immediately try to register hotkey after permission granted
+                self?.hotkeyManager?.registerIfNeeded()
+            },
+            onComplete: { [weak self] in
+                UserDefaults.standard.set(true, forKey: Defaults.onboardingDone)
+                self?.onboardingWindow?.close()
+                self?.onboardingWindow = nil
+            }
+        )
         let window = NSWindow(
-            contentRect: NSRect(x: 0, y: 0, width: 480, height: 372),
+            contentRect: NSRect(x: 0, y: 0, width: 480, height: 344),
             styleMask: [.titled, .closable],
             backing: .buffered,
             defer: false

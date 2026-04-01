@@ -19,7 +19,7 @@ final class MenuBarController: NSObject, NSMenuDelegate {
 
     private func setupStatusItem() {
         if let button = statusItem.button {
-            button.image = NSImage(systemSymbolName: "doc.on.clipboard", accessibilityDescription: "Clipse")
+            button.image = MenuBarController.menuBarIcon()
         }
         let menu = NSMenu()
         menu.delegate = self
@@ -95,4 +95,44 @@ final class MenuBarController: NSObject, NSMenuDelegate {
     }
 
     @objc private func clearHistory() { store.clear() }
+
+    // MARK: - Icon
+
+    /// Programmatic clipboard icon that mirrors the app logo shape.
+    /// isTemplate = true → system applies dark/light mode tinting automatically.
+    private static func menuBarIcon() -> NSImage {
+        let pt: CGFloat = 18
+        let img = NSImage(size: NSSize(width: pt, height: pt), flipped: false) { _ in
+            guard let ctx = NSGraphicsContext.current?.cgContext else { return false }
+
+            // Clipboard body
+            let body = CGRect(x: 2, y: 1, width: 14, height: 16)
+            ctx.addPath(CGPath(roundedRect: body, cornerWidth: 3, cornerHeight: 3, transform: nil))
+            ctx.setFillColor(CGColor(gray: 0, alpha: 1))
+            ctx.fillPath()
+
+            // White clip tab (top center)
+            let tab = CGRect(x: 5.5, y: 13.5, width: 7, height: 4)
+            ctx.addPath(CGPath(roundedRect: tab, cornerWidth: 1.5, cornerHeight: 1.5, transform: nil))
+            ctx.setFillColor(CGColor(gray: 1, alpha: 1))
+            ctx.fillPath()
+
+            // White content lines — 3 rows
+            ctx.setFillColor(CGColor(gray: 1, alpha: 0.9))
+            for (y, w): (CGFloat, CGFloat) in [(10, 10), (7.5, 8), (5, 9)] {
+                ctx.addPath(CGPath(roundedRect: CGRect(x: 4, y: y, width: w, height: 1.5),
+                                   cornerWidth: 0.75, cornerHeight: 0.75, transform: nil))
+                ctx.fillPath()
+            }
+
+            // Small accent dot on first row (mirrors app icon highlight)
+            ctx.setFillColor(CGColor(gray: 1, alpha: 0.5))
+            ctx.addPath(CGPath(ellipseIn: CGRect(x: 12.5, y: 10, width: 2.5, height: 2.5), transform: nil))
+            ctx.fillPath()
+
+            return true
+        }
+        img.isTemplate = true
+        return img
+    }
 }

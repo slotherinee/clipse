@@ -116,7 +116,16 @@ final class PanelController {
             recopy(currentItems[state.selectedIndex]); return nil
         case kVK_ANSI_P where cmd:
             guard state.selectedIndex < currentItems.count else { return nil }
-            store.togglePin(currentItems[state.selectedIndex]); return nil
+            let pinnedItemID = currentItems[state.selectedIndex].id
+            store.togglePin(currentItems[state.selectedIndex])
+            // Re-anchor selection to same item after reorder (Combine fires async)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) { [weak self] in
+                guard let self else { return }
+                if let newIdx = self.currentItems.firstIndex(where: { $0.id == pinnedItemID }) {
+                    self.state.selectedIndex = newIdx
+                }
+            }
+            return nil
         default:
             // Cmd+1…9: быстрый выбор + мгновенная вставка
             if cmd, let index = numKeyMap[Int(event.keyCode)], index < currentItems.count {

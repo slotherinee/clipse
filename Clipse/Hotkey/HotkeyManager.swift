@@ -5,13 +5,21 @@ final class HotkeyManager {
     private let onActivate: () -> Void
     private var eventTap: CFMachPort?
 
+    /// True if CGEventTap was successfully created and is active
+    var isRegistered: Bool { eventTap != nil }
+
     init(onActivate: @escaping () -> Void) {
         self.onActivate = onActivate
     }
 
     func register() {
-        let mask = CGEventMask(1 << CGEventType.keyDown.rawValue)
+        // Don't double-register
+        if let existing = eventTap {
+            CGEvent.tapEnable(tap: existing, enable: true)
+            return
+        }
 
+        let mask = CGEventMask(1 << CGEventType.keyDown.rawValue)
         eventTap = CGEvent.tapCreate(
             tap: .cgSessionEventTap,
             place: .headInsertEventTap,
@@ -22,7 +30,7 @@ final class HotkeyManager {
         )
 
         guard let tap = eventTap else {
-            print("⚠️ CGEventTap failed — Accessibility permission required")
+            // Accessibility not yet granted — will retry via registerIfNeeded()
             return
         }
 
@@ -31,16 +39,21 @@ final class HotkeyManager {
         CGEvent.tapEnable(tap: tap, enable: true)
     }
 
+    /// Call after accessibility is granted — re-creates tap if it previously failed
+    func registerIfNeeded() {
+        guard !isRegistered else { return }
+        register()
+    }
+
     func unregister() {
         guard let tap = eventTap else { return }
         CGEvent.tapEnable(tap: tap, enable: false)
         eventTap = nil
     }
 
-    // MARK: - Internal (вызывается из C callback)
+    // MARK: - Internal (called from C callback)
 
     fileprivate func handle(type: CGEventType, event: CGEvent) -> Unmanaged<CGEvent>? {
-        // Система может отключить tap — реактивируем немедленно
         if type == .tapDisabledByTimeout || type == .tapDisabledByUserInput {
             if let tap = eventTap { CGEvent.tapEnable(tap: tap, enable: true) }
             return nil
@@ -48,7 +61,7 @@ final class HotkeyManager {
 
         guard type == .keyDown else { return Unmanaged.passRetained(event) }
 
-        let flags = event.flags
+        let flags   = event.flags
         let keyCode = event.getIntegerValueField(.keyboardEventKeycode)
 
         guard
@@ -57,14 +70,11 @@ final class HotkeyManager {
             keyCode == CGKeyCode(kVK_ANSI_V)
         else { return Unmanaged.passRetained(event) }
 
-        // Dispatch async — не блокируем event tap callback
         PerformanceMonitor.hotkeyFired()
         DispatchQueue.main.async { [weak self] in self?.onActivate() }
-        return nil // Поглощаем событие
+        return nil
     }
 }
-
-// MARK: - C callback (global function — единственный способ передать в CGEventTap)
 
 private func hotkeyEventCallback(
     proxy: CGEventTapProxy,
