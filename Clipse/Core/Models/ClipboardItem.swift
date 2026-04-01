@@ -7,7 +7,7 @@ enum ClipType: String, Equatable, Codable {
     case image
 }
 
-struct ClipboardItem: Identifiable, Equatable {
+struct ClipboardItem: Identifiable, Equatable, Codable {
     let id: UUID
     var type: ClipType
     var content: String

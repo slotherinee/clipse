@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 
 final class ClipboardStore: ObservableObject {
     @Published private(set) var items: [ClipboardItem] = []
@@ -7,6 +8,17 @@ final class ClipboardStore: ObservableObject {
     var isPro: () -> Bool = { true }
     /// Fired on main thread when a Pro feature is needed. Set by PanelController.
     var onUpgradeNeeded: ((UpgradeReason) -> Void)?
+
+    private var saveCancellable: AnyCancellable?
+
+    init() {
+        items = ClipboardPersistence.load()
+        // Debounced auto-save: wait 600ms after last change, then save on background queue
+        saveCancellable = $items
+            .dropFirst()
+            .debounce(for: .milliseconds(600), scheduler: DispatchQueue.main)
+            .sink { ClipboardPersistence.save($0) }
+    }
 
     private var maxItems: Int { isPro() ? 100 : 30 }
 
