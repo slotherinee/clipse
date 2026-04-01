@@ -56,8 +56,9 @@ final class ClipboardStore: ObservableObject {
     func filteredItems(query: String, activeBundleID: String? = nil) -> [ClipboardItem] {
         guard !query.isEmpty else { return items }
         PerformanceMonitor.searchBegin()
-        defer { PerformanceMonitor.searchEnd() }
-        return FuzzySearch.filter(items, query: query, isPro: isPro(), activeBundleID: activeBundleID)
+        let results = FuzzySearch.filter(items, query: query, isPro: isPro(), activeBundleID: activeBundleID)
+        PerformanceMonitor.searchEnd(itemCount: items.count, resultCount: results.count)
+        return results
     }
 
     // Вставляем сразу после последнего pinned — O(n) один проход

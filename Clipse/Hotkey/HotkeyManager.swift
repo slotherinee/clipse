@@ -1,90 +1,97 @@
 import AppKit
 import Carbon
+import os.log
+
+private let log = OSLog(subsystem: "com.clipse.app", category: "Hotkey")
 
 final class HotkeyManager {
     private let onActivate: () -> Void
-    private var eventTap: CFMachPort?
+    private var hotKeyRef: EventHotKeyRef?
+    private var eventHandlerRef: EventHandlerRef?
 
-    /// True if CGEventTap was successfully created and is active
-    var isRegistered: Bool { eventTap != nil }
+    var isRegistered: Bool { hotKeyRef != nil }
+
+    var statusDescription: String {
+        isRegistered ? "✅ Hotkey registered (no AX needed)" : "❌ Hotkey not registered"
+    }
 
     init(onActivate: @escaping () -> Void) {
         self.onActivate = onActivate
     }
 
     func register() {
-        // Don't double-register
-        if let existing = eventTap {
-            CGEvent.tapEnable(tap: existing, enable: true)
-            return
-        }
+        guard hotKeyRef == nil else { return }
 
-        let mask = CGEventMask(1 << CGEventType.keyDown.rawValue)
-        eventTap = CGEvent.tapCreate(
-            tap: .cgSessionEventTap,
-            place: .headInsertEventTap,
-            options: .defaultTap,
-            eventsOfInterest: mask,
-            callback: hotkeyEventCallback,
-            userInfo: Unmanaged.passUnretained(self).toOpaque()
+        // Install Carbon event handler on the application event target
+        var spec = EventTypeSpec(eventClass: OSType(kEventClassKeyboard),
+                                 eventKind: UInt32(kEventHotKeyPressed))
+
+        // Pass self as refcon via Unmanaged
+        let status = InstallEventHandler(
+            GetApplicationEventTarget(),
+            carbonHotkeyCallback,
+            1,
+            &spec,
+            Unmanaged.passUnretained(self).toOpaque(),
+            &eventHandlerRef
         )
 
-        guard let tap = eventTap else {
-            // Accessibility not yet granted — will retry via registerIfNeeded()
+        guard status == noErr else {
+            os_log("HotkeyManager: InstallEventHandler failed %{public}d", log: log, type: .error, status)
             return
         }
 
-        let source = CFMachPortCreateRunLoopSource(kCFAllocatorDefault, tap, 0)
-        CFRunLoopAddSource(CFRunLoopGetMain(), source, .commonModes)
-        CGEvent.tapEnable(tap: tap, enable: true)
+        // Cmd+Shift+V  (cmdKey | shiftKey, kVK_ANSI_V = 9)
+        let hotKeyID = EventHotKeyID(signature: fourCharCode("CLPS"), id: 1)
+        let regStatus = RegisterEventHotKey(
+            UInt32(kVK_ANSI_V),
+            UInt32(cmdKey | shiftKey),
+            hotKeyID,
+            GetApplicationEventTarget(),
+            0,
+            &hotKeyRef
+        )
+
+        if regStatus == noErr {
+            os_log("HotkeyManager: Cmd+Shift+V registered via Carbon", log: log, type: .info)
+        } else {
+            os_log("HotkeyManager: RegisterEventHotKey failed %{public}d", log: log, type: .error, regStatus)
+        }
     }
 
-    /// Call after accessibility is granted — re-creates tap if it previously failed
     func registerIfNeeded() {
         guard !isRegistered else { return }
         register()
     }
 
     func unregister() {
-        guard let tap = eventTap else { return }
-        CGEvent.tapEnable(tap: tap, enable: false)
-        eventTap = nil
+        if let ref = hotKeyRef { UnregisterEventHotKey(ref); hotKeyRef = nil }
+        if let handler = eventHandlerRef { RemoveEventHandler(handler); eventHandlerRef = nil }
     }
 
     // MARK: - Internal (called from C callback)
 
-    fileprivate func handle(type: CGEventType, event: CGEvent) -> Unmanaged<CGEvent>? {
-        if type == .tapDisabledByTimeout || type == .tapDisabledByUserInput {
-            if let tap = eventTap { CGEvent.tapEnable(tap: tap, enable: true) }
-            return nil
-        }
-
-        guard type == .keyDown else { return Unmanaged.passRetained(event) }
-
-        let flags   = event.flags
-        let keyCode = event.getIntegerValueField(.keyboardEventKeycode)
-
-        guard
-            flags.contains(.maskCommand),
-            flags.contains(.maskShift),
-            keyCode == CGKeyCode(kVK_ANSI_V)
-        else { return Unmanaged.passRetained(event) }
-
+    fileprivate func handleHotkey() {
+        os_log("HotkeyManager: Cmd+Shift+V fired", log: log, type: .info)
         PerformanceMonitor.hotkeyFired()
         DispatchQueue.main.async { [weak self] in self?.onActivate() }
-        return nil
     }
 }
 
-private func hotkeyEventCallback(
-    proxy: CGEventTapProxy,
-    type: CGEventType,
-    event: CGEvent,
+// MARK: - Helpers
+
+private func fourCharCode(_ s: String) -> FourCharCode {
+    var result: FourCharCode = 0
+    for char in s.utf8.prefix(4) { result = result << 8 + FourCharCode(char) }
+    return result
+}
+
+private func carbonHotkeyCallback(
+    _: EventHandlerCallRef?,
+    event: EventRef?,
     refcon: UnsafeMutableRawPointer?
-) -> Unmanaged<CGEvent>? {
-    guard let refcon else { return Unmanaged.passRetained(event) }
-    return Unmanaged<HotkeyManager>
-        .fromOpaque(refcon)
-        .takeUnretainedValue()
-        .handle(type: type, event: event)
+) -> OSStatus {
+    guard let refcon else { return OSStatus(eventNotHandledErr) }
+    Unmanaged<HotkeyManager>.fromOpaque(refcon).takeUnretainedValue().handleHotkey()
+    return noErr
 }

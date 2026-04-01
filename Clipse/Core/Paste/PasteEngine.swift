@@ -16,10 +16,16 @@ enum PasteEngine {
         let pb = NSPasteboard.general
         pb.clearContents()
 
-        if item.type == .image, let data = item.imageData, !asPlainText {
-            pb.setData(data, forType: .tiff)
+        if item.type == .image && !asPlainText {
+            if let path = item.imageFilePath {
+                // File-backed image: put the file URL on the pasteboard (like Finder copy)
+                pb.writeObjects([NSURL(fileURLWithPath: path)])
+            } else if let data = item.imageData {
+                pb.setData(data, forType: .tiff)
+            } else {
+                pb.setString(item.content, forType: .string)
+            }
         } else {
-            // asPlainText: только .string тип — форматирование не попадёт в целевое приложение
             pb.setString(item.content, forType: .string)
         }
     }

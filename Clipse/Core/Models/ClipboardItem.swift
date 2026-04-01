@@ -14,6 +14,8 @@ struct ClipboardItem: Identifiable, Equatable, Codable {
     /// Хранится один раз — не пересчитывается при каждом поиске
     let contentLowercased: String
     var imageData: Data?
+    /// Absolute path to the original image file (Finder copy). Persisted. nil for data-only images.
+    var imageFilePath: String?
     var timestamp: Date
     var pinned: Bool
     var sourceApp: String?
@@ -24,6 +26,7 @@ struct ClipboardItem: Identifiable, Equatable, Codable {
         type: ClipType,
         content: String,
         imageData: Data? = nil,
+        imageFilePath: String? = nil,
         timestamp: Date = Date(),
         pinned: Bool = false,
         sourceApp: String? = nil,
@@ -34,6 +37,7 @@ struct ClipboardItem: Identifiable, Equatable, Codable {
         self.content = content
         self.contentLowercased = content.lowercased()
         self.imageData = imageData
+        self.imageFilePath = imageFilePath
         self.timestamp = timestamp
         self.pinned = pinned
         self.sourceApp = sourceApp

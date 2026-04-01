@@ -28,7 +28,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let monitor = ClipboardMonitor(store: store, settings: .shared)
         clipboardMonitor = monitor
 
-        menuBarController = MenuBarController(store: store, panelController: panel)
+        menuBarController = MenuBarController(store: store, panelController: panel, hotkeyManager: hotkey)
         panel.onPaste = { [weak self] in self?.retentionTracker.recordPaste() }
 
         monitor.start()

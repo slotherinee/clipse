@@ -17,8 +17,10 @@
 		43B3ABBB537EA7458EAB91B6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B8CF21CBCFC53569D28AA555 /* Assets.xcassets */; };
 		641A939B4B2EA7CAA31589F7 /* PanelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C28AC61DBD7CDE33CF38CD58 /* PanelController.swift */; };
 		65CBAE80F444692AC70FE9B8 /* ClipseApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF6E20E352E9B8F2151FDED9 /* ClipseApp.swift */; };
+		73C5B86EF63D603EF3A257D1 /* ScrollableTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 722FD8384FBC81C19B250712 /* ScrollableTextView.swift */; };
 		7480B35E6E5142134BBB68AE /* PanelState.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3300BE167D0E10E0A6774F2 /* PanelState.swift */; };
 		78E44A38A3B1EDB15DAF73CE /* PasteEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05964D43F36547EBADC94375 /* PasteEngine.swift */; };
+		7A5DBC83A0CD211B57A3F31B /* ClipboardDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 473E1CB535105D9B47B4522A /* ClipboardDetailView.swift */; };
 		7D17D0212B1D303465FEABCE /* ClipboardPersistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = A63D1030A7F62D5A14252DD4 /* ClipboardPersistence.swift */; };
 		7ED37B60DA43AB2188F0E2B1 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 296A36AD032AA74C5173350E /* AppDelegate.swift */; };
 		81CC140219CCD66919857BBC /* PermissionsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A5389966FE795EF5CB262A9 /* PermissionsManager.swift */; };
@@ -35,6 +37,7 @@
 		E6EB884271DF927F2184965C /* MenuBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23D6776D9DE69D37F0A50549 /* MenuBarController.swift */; };
 		ECC5509AC7B931A535A6F609 /* EmptyStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D02B5298B65653402EFB6CC8 /* EmptyStateView.swift */; };
 		ED127FDEE2604B8FBF4AF65C /* ContextAwareness.swift in Sources */ = {isa = PBXBuildFile; fileRef = 148C646587D3D55989669A5A /* ContextAwareness.swift */; };
+		EFD6CD6C67EE13D4C150C6A8 /* SyntaxHighlighter.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8A8850324D718B3ABFB4D6C /* SyntaxHighlighter.swift */; };
 		F6D67F631C1B051D057912EF /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = F182C92F0ABB694C10ABB359 /* AppSettings.swift */; };
 		F91E8CC3AFA6C03285806E43 /* SearchBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB305018189D2A3B9AF5A2DE /* SearchBarView.swift */; };
 		FDB242F67864A4D79F959C48 /* ClipboardMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C25B44DF2F8DA9D1009B1E0 /* ClipboardMonitor.swift */; };
@@ -52,15 +55,18 @@
 		2BD013A3D87CA7E673D7ADD0 /* ClipboardListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClipboardListView.swift; sourceTree = "<group>"; };
 		2F3940E187FF0D99260AFBB6 /* ClipboardItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClipboardItem.swift; sourceTree = "<group>"; };
 		3D4959A49EB13F30313CC49C /* PerformanceMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerformanceMonitor.swift; sourceTree = "<group>"; };
+		473E1CB535105D9B47B4522A /* ClipboardDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClipboardDetailView.swift; sourceTree = "<group>"; };
 		4F6BF04EF04BB496D3894B58 /* Clipse.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Clipse.entitlements; sourceTree = "<group>"; };
 		5A5389966FE795EF5CB262A9 /* PermissionsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermissionsManager.swift; sourceTree = "<group>"; };
 		5C25B44DF2F8DA9D1009B1E0 /* ClipboardMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClipboardMonitor.swift; sourceTree = "<group>"; };
 		602803CA2D786E3079D902BE /* AppIconView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIconView.swift; sourceTree = "<group>"; };
 		610F8A1A6DACA763CDD78C8C /* ClipboardPanelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClipboardPanelView.swift; sourceTree = "<group>"; };
+		722FD8384FBC81C19B250712 /* ScrollableTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollableTextView.swift; sourceTree = "<group>"; };
 		7A2A15BEC167D928B3970779 /* FuzzySearch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FuzzySearch.swift; sourceTree = "<group>"; };
 		850ACE89C8C409840BCAD9D1 /* HotkeyManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HotkeyManager.swift; sourceTree = "<group>"; };
 		9CBF9B67BC140D55667A757A /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		A63D1030A7F62D5A14252DD4 /* ClipboardPersistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClipboardPersistence.swift; sourceTree = "<group>"; };
+		A8A8850324D718B3ABFB4D6C /* SyntaxHighlighter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyntaxHighlighter.swift; sourceTree = "<group>"; };
 		B4D1DF0E47E5C13E1C2DB281 /* UpgradePromptView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpgradePromptView.swift; sourceTree = "<group>"; };
 		B8CF21CBCFC53569D28AA555 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		BF6E20E352E9B8F2151FDED9 /* ClipseApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClipseApp.swift; sourceTree = "<group>"; };
@@ -102,8 +108,10 @@
 			isa = PBXGroup;
 			children = (
 				602803CA2D786E3079D902BE /* AppIconView.swift */,
+				473E1CB535105D9B47B4522A /* ClipboardDetailView.swift */,
 				2664B6AC2CEBC4063C073024 /* ClipboardItemView.swift */,
 				D02B5298B65653402EFB6CC8 /* EmptyStateView.swift */,
+				722FD8384FBC81C19B250712 /* ScrollableTextView.swift */,
 				CB305018189D2A3B9AF5A2DE /* SearchBarView.swift */,
 			);
 			path = Components;
@@ -217,6 +225,7 @@
 				7148347504BA519E7D9D1318 /* List */,
 				0631D5E44F34FFF2BE473962 /* Panel */,
 				6EE29D2D25D4B5E74AB5B9B2 /* Settings */,
+				FD5220DFD093D2A5E3F7A439 /* Syntax */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -294,6 +303,14 @@
 			path = Performance;
 			sourceTree = "<group>";
 		};
+		FD5220DFD093D2A5E3F7A439 /* Syntax */ = {
+			isa = PBXGroup;
+			children = (
+				A8A8850324D718B3ABFB4D6C /* SyntaxHighlighter.swift */,
+			);
+			path = Syntax;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -367,6 +384,7 @@
 				7ED37B60DA43AB2188F0E2B1 /* AppDelegate.swift in Sources */,
 				AE70B8606BCB113AAD7D3455 /* AppIconView.swift in Sources */,
 				F6D67F631C1B051D057912EF /* AppSettings.swift in Sources */,
+				7A5DBC83A0CD211B57A3F31B /* ClipboardDetailView.swift in Sources */,
 				321F6EF6CB4F1724E55AA83B /* ClipboardItem.swift in Sources */,
 				993B9DCD831CA5C65610EA89 /* ClipboardItemView.swift in Sources */,
 				9B3E957BD0EABB000C2E95CA /* ClipboardListView.swift in Sources */,
@@ -389,9 +407,11 @@
 				178DF2A218C9B77B2E3F7930 /* PerformanceMonitor.swift in Sources */,
 				81CC140219CCD66919857BBC /* PermissionsManager.swift in Sources */,
 				BD7B60537BCCB5D7026C359C /* RetentionTracker.swift in Sources */,
+				73C5B86EF63D603EF3A257D1 /* ScrollableTextView.swift in Sources */,
 				F91E8CC3AFA6C03285806E43 /* SearchBarView.swift in Sources */,
 				D4503CE95047173576F35F84 /* SettingsView.swift in Sources */,
 				3AD4E5525225381DB5A83404 /* SoundEngine.swift in Sources */,
+				EFD6CD6C67EE13D4C150C6A8 /* SyntaxHighlighter.swift in Sources */,
 				33E531B48A3269BB76BBA684 /* UpgradePromptView.swift in Sources */,
 				A80E96401CE0EDA0EB5D6BC8 /* VisualEffectView.swift in Sources */,
 			);

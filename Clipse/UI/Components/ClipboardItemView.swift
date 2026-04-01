@@ -7,12 +7,20 @@ struct ClipboardItemView: View {
     let isSelected: Bool
     let onDoubleTap: ((ClipboardItem) -> Void)?
     let onSelect: ((Int) -> Void)?
+    let onShowDetail: ((ClipboardItem) -> Void)?
 
     @State private var isHovered = false
+    @Environment(\.colorScheme) private var colorScheme
 
     var body: some View {
         HStack(spacing: 10) {
-            typeIcon.frame(width: 18, alignment: .center)
+            // Left accent bar for selected state (Raycast-style)
+            RoundedRectangle(cornerRadius: 2)
+                .fill(isSelected ? Color.accentColor : Color.clear)
+                .frame(width: 3, height: 28)
+                .animation(.easeOut(duration: 0.1), value: isSelected)
+
+            typeIcon.frame(width: 16, alignment: .center)
 
             VStack(alignment: .leading, spacing: 2) {
                 contentView
@@ -21,27 +29,35 @@ struct ClipboardItemView: View {
 
             Spacer(minLength: 0)
 
-            if item.pinned {
-                Image(systemName: "pin.fill")
-                    .font(.system(size: 9))
-                    .foregroundStyle(.secondary)
-            }
+            HStack(spacing: 6) {
+                if item.pinned {
+                    Image(systemName: "pin.fill")
+                        .font(.system(size: 9))
+                        .foregroundStyle(.tertiary)
+                }
 
-            Text("\(index + 1)")
-                .font(.system(size: 11, weight: .medium, design: .monospaced))
-                .foregroundStyle(.quaternary)
-                .frame(width: 14, alignment: .trailing)
+                Text(index < 9 ? "\(index + 1)" : "")
+                    .font(.system(size: 11, weight: .semibold, design: .monospaced))
+                    .foregroundStyle(.secondary.opacity(0.5))
+                    .frame(width: 14, alignment: .trailing)
+
+                Button {
+                    onShowDetail?(item)
+                } label: {
+                    Image(systemName: "chevron.right")
+                        .font(.system(size: 10, weight: .medium))
+                        .foregroundStyle(isHovered || isSelected ? Color.secondary : Color.clear)
+                }
+                .buttonStyle(.plain)
+            }
         }
-        .padding(.horizontal, 12)
+        .padding(.leading, 8)
+        .padding(.trailing, 12)
         .padding(.vertical, 7)
         .background(rowBackground)
         .clipShape(RoundedRectangle(cornerRadius: 6))
-        .scaleEffect(isSelected ? 1.03 : 1.0)
-        .opacity(isSelected ? 1.0 : 0.65)
-        .shadow(color: .accentColor.opacity(isSelected ? 0.2 : 0), radius: 6, y: 2)
         .animation(.easeOut(duration: 0.08), value: isSelected)
         .onHover { isHovered = $0 }
-        // Double-tap fires first (exclusively), then single-tap for select
         .gesture(
             TapGesture(count: 2).onEnded { onDoubleTap?(item) }
                 .exclusively(before: TapGesture(count: 1).onEnded { onSelect?(index) })
@@ -55,13 +71,11 @@ struct ClipboardItemView: View {
         case .url:
             Text(domain(item.content))
                 .lineLimit(1)
-                .font(.system(size: 13))
+                .font(.system(size: 13, weight: .medium))
                 .foregroundStyle(.primary)
         case .code:
-            Text(item.content)
+            Text(SyntaxHighlighter.highlight(item.content, dark: colorScheme == .dark, fontSize: 12))
                 .lineLimit(2)
-                .font(.system(size: 12, design: .monospaced))
-                .foregroundStyle(.primary)
         case .image:
             imageThumbnail
         case .text:
@@ -73,14 +87,22 @@ struct ClipboardItemView: View {
     }
 
     @ViewBuilder private var imageThumbnail: some View {
-        if let data = item.imageData, let img = NSImage(data: data) {
+        let nsImage: NSImage? = {
+            if let path = item.imageFilePath { return NSImage(contentsOfFile: path) }
+            if let data = item.imageData     { return NSImage(data: data) }
+            return nil
+        }()
+        if let img = nsImage {
             Image(nsImage: img)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
-                .frame(height: 36)
+                .frame(height: 34)
                 .clipShape(RoundedRectangle(cornerRadius: 4))
         } else {
-            Text("[Image]").font(.system(size: 13)).foregroundStyle(.secondary)
+            Label(item.imageFilePath.map { URL(fileURLWithPath: $0).lastPathComponent } ?? "[Image]",
+                  systemImage: "photo")
+                .font(.system(size: 12))
+                .foregroundStyle(.secondary)
         }
     }
 
@@ -100,8 +122,8 @@ struct ClipboardItemView: View {
     private var rowBackground: some View {
         RoundedRectangle(cornerRadius: 6)
             .fill(isSelected
-                ? Color.accentColor.opacity(0.12)
-                : isHovered ? Color.primary.opacity(0.05) : Color.clear)
+                ? Color.primary.opacity(0.08)
+                : isHovered ? Color.primary.opacity(0.04) : Color.clear)
             .animation(.easeOut(duration: 0.05), value: isHovered)
     }
 
@@ -115,10 +137,9 @@ struct ClipboardItemView: View {
             }
         }
         .font(.system(size: 12))
-        .foregroundStyle(.secondary)
+        .foregroundStyle(isSelected ? Color.accentColor.opacity(0.8) : Color.secondary.opacity(0.6))
     }
 
-    // Strips scheme, returns bare domain — no URL(string:) allocation
     private func domain(_ url: String) -> String {
         var s = url
         if s.hasPrefix("https://") { s = String(s.dropFirst(8)) }

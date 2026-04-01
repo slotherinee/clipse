@@ -5,14 +5,16 @@ final class MenuBarController: NSObject, NSMenuDelegate {
     private let statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
     private let store: ClipboardStore
     private let panelController: PanelController
+    private weak var hotkeyManager: HotkeyManager?
     // Settings window created once, reused — avoids re-allocating NSHostingView
     private var settingsWindow: NSWindow?
     // Captured in menuWillOpen — before menu activates our app
     private var previousApp: NSRunningApplication?
 
-    init(store: ClipboardStore, panelController: PanelController) {
+    init(store: ClipboardStore, panelController: PanelController, hotkeyManager: HotkeyManager? = nil) {
         self.store = store
         self.panelController = panelController
+        self.hotkeyManager = hotkeyManager
         super.init()
         setupStatusItem()
     }
@@ -40,6 +42,17 @@ final class MenuBarController: NSObject, NSMenuDelegate {
 
         addItem(menu, title: "Settings…", action: #selector(openSettings), key: ",")
         addItem(menu, title: "Clear History", action: #selector(clearHistory), key: "")
+        menu.addItem(.separator())
+
+        // Debug: hotkey tap status
+        let status = hotkeyManager?.statusDescription ?? "HotkeyManager not set"
+        let statusItem = NSMenuItem(title: status, action: #selector(retryHotkey), keyEquivalent: "")
+        statusItem.target = self
+        menu.addItem(statusItem)
+
+        // Debug: open panel directly (bypasses hotkey)
+        addItem(menu, title: "Open Panel (debug)", action: #selector(openClipse), key: "")
+
         menu.addItem(.separator())
         menu.addItem(withTitle: "Quit Clipse", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")
     }
@@ -82,7 +95,7 @@ final class MenuBarController: NSObject, NSMenuDelegate {
         if settingsWindow == nil {
             let view = SettingsView(settings: AppSettings.shared)
             let hosting = NSHostingView(rootView: view)
-            let window = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 420, height: 320),
+            let window = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 520, height: 480),
                                   styleMask: [.titled, .closable], backing: .buffered, defer: false)
             window.title = "Clipse Settings"
             window.contentView = hosting
@@ -95,6 +108,16 @@ final class MenuBarController: NSObject, NSMenuDelegate {
     }
 
     @objc private func clearHistory() { store.clear() }
+
+    @objc private func retryHotkey() {
+        hotkeyManager?.registerIfNeeded()
+        // Show updated status via NSAlert
+        let alert = NSAlert()
+        alert.messageText = "Hotkey Status"
+        alert.informativeText = hotkeyManager?.statusDescription ?? "HotkeyManager not set"
+        alert.addButton(withTitle: "OK")
+        alert.runModal()
+    }
 
     // MARK: - Icon
 

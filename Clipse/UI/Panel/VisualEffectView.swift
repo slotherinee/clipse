@@ -17,5 +17,11 @@ struct VisualEffectView: NSViewRepresentable {
         return view
     }
 
-    func updateNSView(_ nsView: NSVisualEffectView, context: Context) {}
+    func updateNSView(_ nsView: NSVisualEffectView, context: Context) {
+        switch context.environment.colorScheme {
+        case .dark:  nsView.appearance = NSAppearance(named: .vibrantDark)
+        case .light: nsView.appearance = NSAppearance(named: .aqua)
+        @unknown default: nsView.appearance = nil
+        }
+    }
 }

@@ -5,14 +5,15 @@ struct SearchBarView: View {
     @FocusState.Binding var isFocused: Bool
 
     var body: some View {
-        HStack(spacing: 8) {
+        HStack(spacing: 10) {
             Image(systemName: "magnifyingglass")
-                .foregroundStyle(.secondary)
-                .font(.system(size: 14, weight: .medium))
+                .font(.system(size: 16, weight: .medium))
+                .foregroundStyle(.primary.opacity(0.5))
+                .frame(width: 20)
 
-            TextField("Search clipboard…", text: $query)
+            TextField("Search…", text: $query)
                 .textFieldStyle(.plain)
-                .font(.system(size: 15))
+                .font(.system(size: 16))
                 .focused($isFocused)
                 .autocorrectionDisabled()
 
@@ -20,12 +21,12 @@ struct SearchBarView: View {
                 Button { query = "" } label: {
                     Image(systemName: "xmark.circle.fill")
                         .foregroundStyle(.tertiary)
-                        .font(.system(size: 13))
+                        .font(.system(size: 14))
                 }
                 .buttonStyle(.plain)
             }
         }
-        .padding(.horizontal, 14)
-        .padding(.vertical, 11)
+        .padding(.horizontal, 16)
+        .padding(.vertical, 13)
     }
 }

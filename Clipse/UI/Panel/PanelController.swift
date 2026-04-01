@@ -16,12 +16,14 @@ final class PanelController {
     // Кэш отфильтрованных items для keyboard handler — синхронизируется через Combine
     private var currentItems: [ClipboardItem] = []
     private var cancellables = Set<AnyCancellable>()
+    private var focusLossObserver: Any?
 
     init(store: ClipboardStore) {
         self.store = store
         self.panel = ClipboardPanel()
         preload()
         subscribeToState()
+        subscribeFocusLoss()
         store.onUpgradeNeeded = { [weak self] reason in
             self?.state.upgradeReason = reason
         }
@@ -38,6 +40,17 @@ final class PanelController {
         let hosting = NSHostingView(rootView: view)
         hosting.wantsLayer = true
         panel.contentView = hosting
+    }
+
+    private func subscribeFocusLoss() {
+        focusLossObserver = NotificationCenter.default.addObserver(
+            forName: NSWindow.didResignKeyNotification,
+            object: panel,
+            queue: .main
+        ) { [weak self] _ in
+            guard let self, self.isVisible else { return }
+            if AppSettings.shared.closeOnFocusLoss { self.hide() }
+        }
     }
 
     private func subscribeToState() {
@@ -62,7 +75,11 @@ final class PanelController {
     func show() {
         previousApp = NSWorkspace.shared.frontmostApplication
         state.reset()
-        panel.centerOnActiveScreen(itemCount: state.filteredItems.count)
+        // Repopulate synchronously so panel has correct items + height on first frame
+        let fresh = store.filteredItems(query: "")
+        currentItems = fresh
+        state.filteredItems = fresh
+        panel.centerOnActiveScreen(itemCount: fresh.count)
         panel.alphaValue = 0
         panel.orderFront(nil)
         panel.makeKey()
@@ -98,17 +115,33 @@ final class PanelController {
         let cmd = event.modifierFlags.contains(.command)
 
         switch Int(event.keyCode) {
+        case kVK_RightArrow:
+            // Open detail for selected item
+            guard state.detailItem == nil, state.selectedIndex < currentItems.count else { return nil }
+            state.detailItem = currentItems[state.selectedIndex]
+            return nil
+        case kVK_LeftArrow:
+            // Close detail view
+            guard state.detailItem != nil else { return event }
+            state.detailItem = nil
+            return nil
         case kVK_DownArrow:
-            if state.selectedIndex < currentItems.count - 1 { state.selectedIndex += 1 }
+            if state.detailItem != nil { state.detailScroll.scroll(by: 48); return nil }
+            guard !currentItems.isEmpty else { return nil }
+            state.selectedIndex = (state.selectedIndex + 1) % currentItems.count
             return nil
         case kVK_UpArrow:
-            if state.selectedIndex > 0 { state.selectedIndex -= 1 }
+            if state.detailItem != nil { state.detailScroll.scroll(by: -48); return nil }
+            guard !currentItems.isEmpty else { return nil }
+            state.selectedIndex = (state.selectedIndex - 1 + currentItems.count) % currentItems.count
             return nil
         case kVK_Return:
+            if state.detailItem != nil { return nil } // don't paste from detail accidentally
             guard state.selectedIndex < currentItems.count else { return nil }
             paste(currentItems[state.selectedIndex], asPlainText: event.modifierFlags.contains(.shift))
             return nil
         case kVK_Escape:
+            if state.detailItem != nil { state.detailItem = nil; return nil }
             hide(); return nil
         case kVK_ANSI_C where cmd:
             // Re-copy: записываем в pasteboard без вставки, панель остаётся открытой

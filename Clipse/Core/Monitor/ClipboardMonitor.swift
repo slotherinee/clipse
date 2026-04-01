@@ -51,12 +51,32 @@ final class ClipboardMonitor {
         if let string = pasteboard.string(forType: .string) {
             let trimmed = string.trimmingCharacters(in: .whitespacesAndNewlines)
             guard !trimmed.isEmpty, trimmed.count <= maxStringLength else { return }
-            let item = ClipboardItem(type: detectType(trimmed), content: trimmed, sourceApp: sourceApp, sourceBundleID: sourceBundleID)
+            let type = detectType(trimmed)
+            PerformanceMonitor.clipboardCaptured(type: type.rawValue, contentLength: trimmed.count)
+            let item = ClipboardItem(type: type, content: trimmed, sourceApp: sourceApp, sourceBundleID: sourceBundleID)
             DispatchQueue.main.async { self.store.add(item) }
             return
         }
 
+        // Image file copied from Finder → store path only (no data, persists across restarts)
+        if let urlData = pasteboard.data(forType: NSPasteboard.PasteboardType("public.file-url")),
+           let urlString = String(data: urlData, encoding: .utf8),
+           let fileURL = URL(string: urlString), fileURL.isFileURL {
+            let ext = fileURL.pathExtension.lowercased()
+            let imageExts: Set<String> = ["jpg", "jpeg", "png", "gif", "heic", "webp", "tiff", "bmp", "svg"]
+            if imageExts.contains(ext) {
+                let path = fileURL.path
+                PerformanceMonitor.clipboardCaptured(type: "image-file", contentLength: path.count)
+                let item = ClipboardItem(type: .image, content: path, imageFilePath: path,
+                                         sourceApp: sourceApp, sourceBundleID: sourceBundleID)
+                DispatchQueue.main.async { self.store.add(item) }
+                return
+            }
+        }
+
+        // Raw image data (screenshot, web, etc.) — in-memory only, Pro feature
         if let data = pasteboard.data(forType: .tiff) ?? pasteboard.data(forType: .png) {
+            PerformanceMonitor.clipboardCaptured(type: "image", contentLength: data.count)
             let item = ClipboardItem(type: .image, content: "[Image]", imageData: data, sourceApp: sourceApp, sourceBundleID: sourceBundleID)
             DispatchQueue.main.async { self.store.add(item) }
         }

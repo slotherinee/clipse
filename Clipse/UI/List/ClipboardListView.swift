@@ -5,6 +5,7 @@ struct ClipboardListView: View {
     let selectedIndex: Int
     let onDoubleTap: ((ClipboardItem) -> Void)?
     let onSelect: ((Int) -> Void)?
+    let onShowDetail: ((ClipboardItem) -> Void)?
 
     var body: some View {
         ScrollViewReader { proxy in
@@ -23,19 +24,20 @@ struct ClipboardListView: View {
                             index: index,
                             isSelected: index == selectedIndex,
                             onDoubleTap: onDoubleTap,
-                            onSelect: onSelect
+                            onSelect: onSelect,
+                            onShowDetail: onShowDetail
                         )
-                        .id(index)
+                        .id(item.id)  // UUID — не индекс, иначе LazyVStack кэширует устаревший контент
                     }
                 }
                 .padding(.horizontal, 6)
                 .padding(.vertical, 4)
-                // Spring animation when items reorder (pin/unpin)
                 .animation(.spring(response: 0.28, dampingFraction: 0.72), value: itemsIdentityDigest)
             }
             .onChange(of: selectedIndex) { newIndex in
+                guard newIndex < items.count else { return }
                 withAnimation(.easeOut(duration: 0.08)) {
-                    proxy.scrollTo(newIndex, anchor: .center)
+                    proxy.scrollTo(items[newIndex].id, anchor: .center)
                 }
             }
         }
@@ -44,7 +46,7 @@ struct ClipboardListView: View {
 
     private var itemsIdentityDigest: Int {
         var hasher = Hasher()
-        for item in items { hasher.combine(item.id) }
+        for item in items { hasher.combine(item.id); hasher.combine(item.pinned) }
         return hasher.finalize()
     }
 }
