@@ -8,6 +8,7 @@ final class ClipboardStore: ObservableObject {
 
     private var maxItems: Int { isPro() ? 100 : 30 }
 
+    // Инвариант: pinned items всегда в начале массива
     func add(_ item: ClipboardItem) {
         if item.type == .image && !isPro() { return }
 
@@ -15,9 +16,9 @@ final class ClipboardStore: ObservableObject {
             var updated = items[index]
             updated.timestamp = item.timestamp
             items.remove(at: index)
-            items.insert(updated, at: 0)
+            insertAfterPinned(updated)
         } else {
-            items.insert(item, at: 0)
+            insertAfterPinned(item)
             trim()
         }
     }
@@ -36,21 +37,24 @@ final class ClipboardStore: ObservableObject {
         items.removeAll { !$0.pinned }
     }
 
-    // Базовая выборка — поиск подключается в Этапе 4
+    // Инвариант соблюдён — sort не нужен, O(1) вместо O(n log n)
     func filteredItems(query: String) -> [ClipboardItem] {
-        let sorted = items.sorted { $0.pinned && !$1.pinned }
-        guard !query.isEmpty else { return sorted }
-        return sorted.filter { $0.content.localizedCaseInsensitiveContains(query) }
+        guard !query.isEmpty else { return items }
+        return items.filter { $0.content.localizedCaseInsensitiveContains(query) }
     }
 
+    // Вставляем сразу после последнего pinned — O(n) один проход
+    private func insertAfterPinned(_ item: ClipboardItem) {
+        let insertIndex = items.firstIndex(where: { !$0.pinned }) ?? items.endIndex
+        items.insert(item, at: insertIndex)
+    }
+
+    // Удаляем лишние unpinned с конца — O(n) один проход
     private func trim() {
         guard items.count > maxItems else { return }
-        let pinned = items.filter { $0.pinned }
-        var unpinned = items.filter { !$0.pinned }
-        while pinned.count + unpinned.count > maxItems, !unpinned.isEmpty {
-            unpinned.removeLast()
-        }
-        items = pinned + unpinned
+        let excess = items.count - maxItems
+        let unpinnedIndices = items.indices.filter { !items[$0].pinned }.suffix(excess)
+        items.remove(atOffsets: IndexSet(unpinnedIndices))
     }
 
     private func reorder() {

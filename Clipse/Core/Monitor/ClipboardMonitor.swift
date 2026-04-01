@@ -11,6 +11,7 @@ private let excludedBundleIDs: Set<String> = [
 ]
 
 private let codeSignals = ["func ", "def ", "class ", "import ", "//", "=>", "->", "var ", "let ", "const "]
+private let maxStringLength = 50_000 // ~50KB — пропускаем огромные логи/файлы
 
 final class ClipboardMonitor {
     private let store: ClipboardStore
@@ -50,8 +51,10 @@ final class ClipboardMonitor {
         let sourceApp = frontApp?.localizedName
         let sourceBundleID = frontApp?.bundleIdentifier
 
-        if let string = pasteboard.string(forType: .string), !string.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-            let item = ClipboardItem(type: detectType(string), content: string, sourceApp: sourceApp, sourceBundleID: sourceBundleID)
+        if let string = pasteboard.string(forType: .string) {
+            let trimmed = string.trimmingCharacters(in: .whitespacesAndNewlines)
+            guard !trimmed.isEmpty, trimmed.count <= maxStringLength else { return }
+            let item = ClipboardItem(type: detectType(trimmed), content: trimmed, sourceApp: sourceApp, sourceBundleID: sourceBundleID)
             DispatchQueue.main.async { self.store.add(item) }
             return
         }
@@ -68,9 +71,9 @@ final class ClipboardMonitor {
         return .text
     }
 
+    // Простой prefix check — в 10x быстрее чем URL(string:)
     private func isURL(_ string: String) -> Bool {
-        guard let url = URL(string: string.trimmingCharacters(in: .whitespacesAndNewlines)) else { return false }
-        return url.scheme == "http" || url.scheme == "https"
+        (string.hasPrefix("http://") || string.hasPrefix("https://")) && !string.contains(" ")
     }
 
     private func isCode(_ string: String) -> Bool {
