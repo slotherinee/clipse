@@ -1,26 +1,18 @@
 import AppKit
 
-private let excludedBundleIDs: Set<String> = [
-    "com.agilebits.onepassword7",
-    "com.agilebits.onepassword-osx",
-    "com.bitwarden.desktop",
-    "com.apple.keychainaccess",
-    "com.lastpass.lastpass",
-    "com.dashlane.dashlane-osx",
-    "com.1password.1password"
-]
-
 private let codeSignals = ["func ", "def ", "class ", "import ", "//", "=>", "->", "var ", "let ", "const "]
 private let maxStringLength = 50_000 // ~50KB — пропускаем огромные логи/файлы
 
 final class ClipboardMonitor {
     private let store: ClipboardStore
+    private let settings: AppSettings
     private let queue = DispatchQueue(label: "com.clipse.monitor", qos: .utility)
     private var isRunning = false
     private var lastChangeCount: Int = NSPasteboard.general.changeCount
 
-    init(store: ClipboardStore) {
+    init(store: ClipboardStore, settings: AppSettings = .shared) {
         self.store = store
+        self.settings = settings
     }
 
     func start() {
@@ -46,7 +38,7 @@ final class ClipboardMonitor {
         lastChangeCount = pasteboard.changeCount
 
         let frontApp = NSWorkspace.shared.frontmostApplication
-        if let id = frontApp?.bundleIdentifier, excludedBundleIDs.contains(id) { return }
+        if let id = frontApp?.bundleIdentifier, settings.excludedBundleIDs.contains(id) { return }
 
         let sourceApp = frontApp?.localizedName
         let sourceBundleID = frontApp?.bundleIdentifier
