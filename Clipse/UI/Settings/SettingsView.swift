@@ -3,6 +3,7 @@ import ServiceManagement
 
 struct SettingsView: View {
     @ObservedObject var settings: AppSettings
+    @ObservedObject private var license = LicenseManager.shared
     @State private var launchAtLogin: Bool = (SMAppService.mainApp.status == .enabled)
     @State private var newExclusion: String = ""
 
@@ -52,14 +53,27 @@ struct SettingsView: View {
                 HStack {
                     Text("Status").foregroundStyle(.secondary)
                     Spacer()
-                    Text("Trial — 14 days").foregroundStyle(.orange)
+                    licenseStatusText
                 }
-                Button("Unlock Pro — $9.99") {}
-                    .buttonStyle(.borderedProminent)
+                if case .pro = license.status {} else {
+                    Button("Unlock Pro — $9.99") { LicenseManager.shared.unlock() }
+                        .buttonStyle(.borderedProminent)
+                }
             }
         }
         .formStyle(.grouped)
         .padding()
         .frame(width: 420, height: 320)
+    }
+
+    @ViewBuilder private var licenseStatusText: some View {
+        switch license.status {
+        case .pro:
+            Text("Pro").foregroundStyle(.green)
+        case .trial(let days):
+            Text("Trial — \(days) day\(days == 1 ? "" : "s") left").foregroundStyle(.orange)
+        case .free:
+            Text("Free").foregroundStyle(.secondary)
+        }
     }
 }

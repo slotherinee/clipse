@@ -20,6 +20,9 @@ final class PanelController {
         self.panel = ClipboardPanel()
         preload()
         subscribeToState()
+        store.onUpgradeNeeded = { [weak self] reason in
+            self?.state.upgradeReason = reason
+        }
     }
 
     // MARK: - Setup

@@ -3,8 +3,10 @@ import Foundation
 final class ClipboardStore: ObservableObject {
     @Published private(set) var items: [ClipboardItem] = []
 
-    // Injected from LicenseManager (Этап 11)
+    // Injected from LicenseManager (Stage 11)
     var isPro: () -> Bool = { true }
+    /// Fired on main thread when a Pro feature is needed. Set by PanelController.
+    var onUpgradeNeeded: ((UpgradeReason) -> Void)?
 
     private var maxItems: Int { isPro() ? 100 : 30 }
 
@@ -28,6 +30,7 @@ final class ClipboardStore: ObservableObject {
     }
 
     func togglePin(_ item: ClipboardItem) {
+        guard isPro() else { onUpgradeNeeded?(.pin); return }
         guard let index = items.firstIndex(where: { $0.id == item.id }) else { return }
         items[index].pinned.toggle()
         reorder()
@@ -52,6 +55,7 @@ final class ClipboardStore: ObservableObject {
     // Удаляем лишние unpinned с конца — O(n) один проход
     private func trim() {
         guard items.count > maxItems else { return }
+        if !isPro() { onUpgradeNeeded?(.historyLimit) }
         let excess = items.count - maxItems
         let unpinnedIndices = items.indices.filter { !items[$0].pinned }.suffix(excess)
         items.remove(atOffsets: IndexSet(unpinnedIndices))

@@ -23,6 +23,11 @@ struct ClipboardPanelView: View {
                     ClipboardListView(items: displayItems, selectedIndex: state.selectedIndex)
                 }
 
+                if let reason = state.upgradeReason {
+                    Divider().opacity(0.2)
+                    UpgradePromptView(reason: reason) { self.state.upgradeReason = nil }
+                }
+
                 Divider().opacity(0.2)
 
                 footerView

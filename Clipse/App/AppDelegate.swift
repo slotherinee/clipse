@@ -9,6 +9,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         let store = ClipboardStore()
+        store.isPro = { LicenseManager.shared.isPro }
         clipboardStore = store
 
         let panel = PanelController(store: store)
@@ -24,6 +25,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
         monitor.start()
         hotkey.register()
+    }
+
+    func applicationDidBecomeActive(_ notification: Notification) {
+        LicenseManager.shared.refresh()
     }
 
     func applicationWillTerminate(_ notification: Notification) {

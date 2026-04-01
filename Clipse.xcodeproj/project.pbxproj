@@ -7,8 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		22E54FD9D423BBEAD803A013 /* LicenseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D657BA06D7ACBA0740F99F97 /* LicenseManager.swift */; };
 		2481C4F8D7268F63D85A5819 /* ClipboardStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1485B90EBEE10B2FB0C9EEE1 /* ClipboardStore.swift */; };
 		321F6EF6CB4F1724E55AA83B /* ClipboardItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F3940E187FF0D99260AFBB6 /* ClipboardItem.swift */; };
+		33E531B48A3269BB76BBA684 /* UpgradePromptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4D1DF0E47E5C13E1C2DB281 /* UpgradePromptView.swift */; };
 		3B254A2DDB846AAC831E9AE8 /* ClipboardPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E66F9E66F500AFD2822DF8B3 /* ClipboardPanel.swift */; };
 		43B3ABBB537EA7458EAB91B6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B8CF21CBCFC53569D28AA555 /* Assets.xcassets */; };
 		641A939B4B2EA7CAA31589F7 /* PanelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C28AC61DBD7CDE33CF38CD58 /* PanelController.swift */; };
@@ -47,11 +49,13 @@
 		610F8A1A6DACA763CDD78C8C /* ClipboardPanelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClipboardPanelView.swift; sourceTree = "<group>"; };
 		7A2A15BEC167D928B3970779 /* FuzzySearch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FuzzySearch.swift; sourceTree = "<group>"; };
 		850ACE89C8C409840BCAD9D1 /* HotkeyManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HotkeyManager.swift; sourceTree = "<group>"; };
+		B4D1DF0E47E5C13E1C2DB281 /* UpgradePromptView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpgradePromptView.swift; sourceTree = "<group>"; };
 		B8CF21CBCFC53569D28AA555 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		BF6E20E352E9B8F2151FDED9 /* ClipseApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClipseApp.swift; sourceTree = "<group>"; };
 		C28AC61DBD7CDE33CF38CD58 /* PanelController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PanelController.swift; sourceTree = "<group>"; };
 		CB305018189D2A3B9AF5A2DE /* SearchBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchBarView.swift; sourceTree = "<group>"; };
 		D02B5298B65653402EFB6CC8 /* EmptyStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyStateView.swift; sourceTree = "<group>"; };
+		D657BA06D7ACBA0740F99F97 /* LicenseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LicenseManager.swift; sourceTree = "<group>"; };
 		E66F9E66F500AFD2822DF8B3 /* ClipboardPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClipboardPanel.swift; sourceTree = "<group>"; };
 		F182C92F0ABB694C10ABB359 /* AppSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettings.swift; sourceTree = "<group>"; };
 		F3300BE167D0E10E0A6774F2 /* PanelState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PanelState.swift; sourceTree = "<group>"; };
@@ -132,6 +136,7 @@
 				C33A32C01A69886436FEEE2E /* Core */,
 				17EC469CF61E786E997C3BC0 /* Hotkey */,
 				35584D585E8D82DD4A0AC281 /* MenuBar */,
+				62EA8311906724F0F2377049 /* Monetization */,
 				25E73176A1CD8B29017DF5D1 /* Resources */,
 				86D4F1EC979B6CE54A41000D /* UI */,
 			);
@@ -144,6 +149,15 @@
 				1485B90EBEE10B2FB0C9EEE1 /* ClipboardStore.swift */,
 			);
 			path = Store;
+			sourceTree = "<group>";
+		};
+		62EA8311906724F0F2377049 /* Monetization */ = {
+			isa = PBXGroup;
+			children = (
+				D657BA06D7ACBA0740F99F97 /* LicenseManager.swift */,
+				B4D1DF0E47E5C13E1C2DB281 /* UpgradePromptView.swift */,
+			);
+			path = Monetization;
 			sourceTree = "<group>";
 		};
 		6A91808582AC1ECBD1978485 /* App */ = {
@@ -311,12 +325,14 @@
 				ECC5509AC7B931A535A6F609 /* EmptyStateView.swift in Sources */,
 				84CF0AEE6FADFDE8F858EFC8 /* FuzzySearch.swift in Sources */,
 				B6B887BEDDA0D0C6581E10E9 /* HotkeyManager.swift in Sources */,
+				22E54FD9D423BBEAD803A013 /* LicenseManager.swift in Sources */,
 				E6EB884271DF927F2184965C /* MenuBarController.swift in Sources */,
 				641A939B4B2EA7CAA31589F7 /* PanelController.swift in Sources */,
 				7480B35E6E5142134BBB68AE /* PanelState.swift in Sources */,
 				78E44A38A3B1EDB15DAF73CE /* PasteEngine.swift in Sources */,
 				F91E8CC3AFA6C03285806E43 /* SearchBarView.swift in Sources */,
 				D4503CE95047173576F35F84 /* SettingsView.swift in Sources */,
+				33E531B48A3269BB76BBA684 /* UpgradePromptView.swift in Sources */,
 				A80E96401CE0EDA0EB5D6BC8 /* VisualEffectView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
