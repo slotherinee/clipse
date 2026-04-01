@@ -116,8 +116,13 @@ final class PanelController {
 
     private func paste(_ item: ClipboardItem, asPlainText: Bool) {
         hide()
+        // Activate ПЕРЕД asyncAfter — даём системе начать переключение фокуса
         previousApp?.activate(options: .activateIgnoringOtherApps)
-        // PasteEngine подключается в Этапе 9
+        // 100ms — стандартная задержка для надёжного переключения фокуса на macOS.
+        // Меньше → paste попадает в неактивное окно. Больше → ощутимая задержка.
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            PasteEngine.paste(item, asPlainText: asPlainText)
+        }
     }
 
     private func recopy(_ item: ClipboardItem) {
